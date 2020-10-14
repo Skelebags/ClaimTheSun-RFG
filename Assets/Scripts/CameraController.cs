@@ -51,7 +51,7 @@ public class CameraController : MonoBehaviour
         }
         if(Input.GetMouseButton(0))
         {
-            transform.Translate(-(Input.mousePosition - startMousePos) * panSpeed);
+            transform.Translate((Input.mousePosition - startMousePos) * -panSpeed);
             startMousePos = Input.mousePosition;
         }
         if(Input.GetMouseButtonUp(0))
