@@ -162,7 +162,7 @@ MonoBehaviour:
   attackDamage: 5
   attackRate: 0.5
   attackRange: 2
-  idealRange: 0.95
+  idealRange: 0.948
   attackMove: 0
 --- !u!195 &1815493886590408370
 NavMeshAgent:

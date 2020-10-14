@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class BuildingController : MonoBehaviour
 {
@@ -58,10 +59,15 @@ public class BuildingController : MonoBehaviour
     private MeshRenderer[] meshRenderers;
     private Color[] baseColors;
 
+    private Collider[] colliders;
+
     private bool canPlace;
+    private bool isIntersecting;
+
+    private LayerMask groundMask;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         state = State.placing;
         buildQueue = new List<GameObject>();
@@ -80,7 +86,16 @@ public class BuildingController : MonoBehaviour
             baseColors[i] = meshRenderers[i].material.color;
         }
 
+        colliders = GetComponentsInChildren<Collider>();
+        foreach (Collider collider in colliders)
+        {
+            collider.isTrigger = true;
+        }
+        GetComponent<NavMeshObstacle>().enabled = false;
+
+        isIntersecting = false;
         canPlace = true;
+        groundMask = LayerMask.GetMask("Ground");
     }
 
     // Update is called once per frame
@@ -89,6 +104,7 @@ public class BuildingController : MonoBehaviour
         switch(state)
         {
             case State.ready:
+                GetComponent<Rigidbody>().isKinematic = true;
                 if (buildQueue.Count > 0)
                 {
                     unitTimer += Time.deltaTime;
@@ -119,11 +135,11 @@ public class BuildingController : MonoBehaviour
                     }
                     buildTimer += Time.deltaTime;
                 }
-
+                GetComponent<Rigidbody>().isKinematic = true;
                 break;
 
             case State.placing:
-                if(canPlace)
+                if(canPlace && !isIntersecting)
                 {
                     foreach(MeshRenderer meshRenderer in meshRenderers)
                     {
@@ -173,9 +189,20 @@ public class BuildingController : MonoBehaviour
         canPlace = placeable;
     }
 
+    public bool GetIntersecting()
+    {
+        return isIntersecting;
+    }
+
     public void Place()
     {
         transform.Translate(-Vector3.up * GetComponentInChildren<Collider>().bounds.size.y);
+        foreach (Collider collider in colliders)
+        {
+            collider.isTrigger = false;
+        }
+        GetComponent<NavMeshObstacle>().enabled = true;
+
         state = State.building;
     }
 
@@ -201,5 +228,21 @@ public class BuildingController : MonoBehaviour
     public void Kill()
     {
         Destroy(transform.root.gameObject);
+    }
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        if(collision.CompareTag("Building"))
+        {
+            isIntersecting = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider collision)
+    {
+        if (collision.CompareTag("Building"))
+        {
+            isIntersecting = false;
+        }
     }
 }

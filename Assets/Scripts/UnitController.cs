@@ -12,7 +12,7 @@ public class UnitController : MonoBehaviour
     [SerializeField]
     [Tooltip("The maximum health of the unit")]
     private float maxHealth = 10f;
-    public float currentHealth;
+    private float currentHealth { get; set; }
 
     [SerializeField]
     [Tooltip("The amount of damage dealt by this unit")]

@@ -303,7 +303,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1543010039}
   - component: {fileID: 1543010038}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NavMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -654,5 +654,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: SelectionIndicator
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8872316877081924756, guid: d134834a884004440a93beaef53bf2a3, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d134834a884004440a93beaef53bf2a3, type: 3}

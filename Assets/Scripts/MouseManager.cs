@@ -32,7 +32,7 @@ public class MouseManager : MonoBehaviour
 
     void Start()
     {
-        groundMask = 1 << LayerMask.NameToLayer("Ground");
+        groundMask = LayerMask.GetMask("Ground");
         keyObjDict = new Dictionary<KeyCode, GameObject>();
         for(int i = 0; i < hotKeys.Length; i++)
         {
@@ -121,6 +121,7 @@ public class MouseManager : MonoBehaviour
                 if (currentPlaceableObject != null)
                 {
                     Destroy(currentPlaceableObject);
+                    mouseState = MouseState.idle;
                 }
                 else
                 {
@@ -196,6 +197,7 @@ public class MouseManager : MonoBehaviour
         {
             canPlace = true;
             currentPlaceableObject.GetComponent<BuildingController>().SetPlaceable(canPlace);
+            //currentPlaceableObject.GetComponent<Rigidbody>().position = new Vector3(hitInfo.point.x, hitInfo.point.y + currentPlaceableObject.GetComponentInChildren<Collider>().bounds.extents.y, hitInfo.point.z);
             currentPlaceableObject.transform.position = new Vector3(hitInfo.point.x, hitInfo.point.y + currentPlaceableObject.GetComponentInChildren<Collider>().bounds.extents.y, hitInfo.point.z);
             currentPlaceableObject.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
         }
@@ -214,7 +216,7 @@ public class MouseManager : MonoBehaviour
 
     private void ReleaseIfClicked()
     {
-        if(Input.GetMouseButtonDown(0) && canPlace)
+        if(Input.GetMouseButtonDown(0) && canPlace && !currentPlaceableObject.GetComponent<BuildingController>().GetIntersecting())
         {
             currentPlaceableObject.GetComponent<BuildingController>().Place();
             currentPlaceableObject = null;
