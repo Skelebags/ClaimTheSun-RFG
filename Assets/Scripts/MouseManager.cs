@@ -22,13 +22,10 @@ public class MouseManager : MonoBehaviour
     private Dictionary<KeyCode, GameObject> keyObjDict;
 
     private GameObject currentPlaceableObject;
-    private MeshRenderer[] currentMeshRenderers;
 
     private float mouseWheelRotation;
 
     private bool canPlace;
-
-    private Color[] baseColors;
 
     private LayerMask groundMask;
 
@@ -46,7 +43,14 @@ public class MouseManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HandleNewObjectHotkey();
+        if (selectedObject == null)
+        {
+            HandleNewObjectHotkey();
+        }
+        else
+        {
+            HandleBuildingHotkey();
+        }
 
         switch(mouseState)
         {
@@ -95,20 +99,25 @@ public class MouseManager : MonoBehaviour
                 if (currentPlaceableObject != null)
                 {
                     Destroy(currentPlaceableObject);
-                    currentMeshRenderers = null;
-                    baseColors = null;
                 }
                 else
                 {
                     currentPlaceableObject = Instantiate(keyObjDict[hotKey]);
-                    currentMeshRenderers = currentPlaceableObject.GetComponentsInChildren<MeshRenderer>();
-                    baseColors = new Color[currentMeshRenderers.Length];
-                    for(int i = 0; i < currentMeshRenderers.Length; i++)
-                    {
-                        baseColors[i] = currentMeshRenderers[i].material.color;
-                    }
-                    
                     mouseState = MouseState.placing;
+                }
+            }
+        }
+    }
+
+    private void HandleBuildingHotkey()
+    {
+        if(selectedObject != null)
+        {
+            foreach (KeyCode hotKey in selectedObject.GetComponent<BuildingController>().GetHotKeys())
+            {
+                if (Input.GetKeyDown(hotKey))
+                {
+                    selectedObject.GetComponent<BuildingController>().AddToQueue(hotKey);
                 }
             }
         }
@@ -122,25 +131,15 @@ public class MouseManager : MonoBehaviour
         RaycastHit hitInfo;
         if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask))
         {
-            if(hitInfo.collider.gameObject.CompareTag("Ground"))
-            {
-                currentPlaceableObject.SetActive(true);
-                canPlace = true;
-                currentPlaceableObject.transform.position = hitInfo.point;
-                currentPlaceableObject.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
-                foreach(MeshRenderer meshRenderer in currentMeshRenderers)
-                {
-                    meshRenderer.material.color = new Color(0f, 0f, 1f, 0.25f);
-                }
-            }
+            canPlace = true;
+            currentPlaceableObject.GetComponent<BuildingController>().SetPlaceable(canPlace);
+            currentPlaceableObject.transform.position = new Vector3(hitInfo.point.x, hitInfo.point.y + currentPlaceableObject.GetComponentInChildren<Collider>().bounds.extents.y, hitInfo.point.z);
+            currentPlaceableObject.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
         }
         else
         {
-            foreach (MeshRenderer meshRenderer in currentMeshRenderers)
-            {
-                meshRenderer.material.color = new Color(1f, 0f, 0f, 0.25f);
-            }
             canPlace = false;
+            currentPlaceableObject.GetComponent<BuildingController>().SetPlaceable(canPlace);
         }
     }
 
@@ -155,13 +154,8 @@ public class MouseManager : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0) && canPlace)
         {
-            for(int i = 0; i < currentMeshRenderers.Length; i++)
-            {
-                currentMeshRenderers[i].material.color = baseColors[i];
-            }
+            currentPlaceableObject.GetComponent<BuildingController>().Place();
             currentPlaceableObject = null;
-            currentMeshRenderers = null;
-            baseColors = null;
             mouseState = MouseState.idle;
         }
     }
