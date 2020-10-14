@@ -43,13 +43,22 @@ public class MouseManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (selectedObject == null)
+        if (selectedObject != null)
         {
-            HandleNewObjectHotkey();
+            switch (selectedObject.tag)
+            {
+                case "Building":
+                    HandleBuildingControls();
+                    break;
+                case "Unit":
+                    HandleUnitControls();
+                    break;
+            }
         }
         else
         {
-            HandleBuildingHotkey();
+
+            HandleNewObjectHotkey();
         }
 
         switch(mouseState)
@@ -64,7 +73,12 @@ public class MouseManager : MonoBehaviour
                     {
                         GameObject hitObject = hitInfo.transform.root.gameObject;
 
+                        if(selectedObject != null)
+                        {
+                            ClearSelection();
+                        }
                         SelectObject(hitObject);
+
                     }
                     else
                     {
@@ -82,12 +96,20 @@ public class MouseManager : MonoBehaviour
 
     private void ClearSelection()
     {
+        if(selectedObject.CompareTag("Building"))
+        {
+            selectedObject.GetComponent<BuildingController>().RallyPointVisible(false);
+        }
         selectedObject = null;
     }
 
     private void SelectObject(GameObject obj)
     {
         selectedObject = obj;
+        if (selectedObject.CompareTag("Building"))
+        {
+            selectedObject.GetComponent<BuildingController>().RallyPointVisible(true);
+        }
     }
 
     private void HandleNewObjectHotkey()
@@ -109,15 +131,56 @@ public class MouseManager : MonoBehaviour
         }
     }
 
-    private void HandleBuildingHotkey()
+    private void HandleBuildingControls()
     {
         if(selectedObject != null)
         {
+            if(Input.GetMouseButtonDown(1))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+                RaycastHit hitInfo;
+                if (Physics.Raycast(ray, out hitInfo))
+                {
+                    if (hitInfo.transform.root.gameObject.CompareTag("Ground"))
+                    {
+                        selectedObject.GetComponent<BuildingController>().SetRallyPointPosition(hitInfo.point);
+                    }
+                }
+            }
+
             foreach (KeyCode hotKey in selectedObject.GetComponent<BuildingController>().GetHotKeys())
             {
                 if (Input.GetKeyDown(hotKey))
                 {
                     selectedObject.GetComponent<BuildingController>().AddToQueue(hotKey);
+                }
+            }
+        }
+    }
+
+    private void HandleUnitControls()
+    {
+        UnitController unitController = selectedObject.GetComponent<UnitController>();
+
+        if (selectedObject != null)
+        {
+            // Move the selected unit with the right mouse button
+            if(Input.GetMouseButtonDown(1))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+                RaycastHit hitInfo;
+                if (Physics.Raycast(ray, out hitInfo))
+                {
+                    if(hitInfo.transform.root.gameObject.CompareTag("Ground"))
+                    {
+                        unitController.MoveOrder(hitInfo.point);
+                    }
+                    if(hitInfo.transform.root.gameObject.CompareTag("Building") || hitInfo.transform.root.gameObject.CompareTag("Unit"))
+                    {
+                        unitController.AttackOrder(hitInfo.transform.root.gameObject);
+                    }
                 }
             }
         }
@@ -145,7 +208,6 @@ public class MouseManager : MonoBehaviour
 
     private void RotateFromMouseWheel()
     {
-        Debug.Log(Input.mouseScrollDelta);
         mouseWheelRotation += Input.mouseScrollDelta.y;
         currentPlaceableObject.transform.Rotate(Vector3.up, mouseWheelRotation * 10f);
     }
@@ -157,6 +219,7 @@ public class MouseManager : MonoBehaviour
             currentPlaceableObject.GetComponent<BuildingController>().Place();
             currentPlaceableObject = null;
             mouseState = MouseState.idle;
+            mouseWheelRotation = 0f;
         }
     }
 }

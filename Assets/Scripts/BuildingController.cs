@@ -9,6 +9,11 @@ public class BuildingController : MonoBehaviour
     private float buildTime = 5f;
 
     [SerializeField]
+    [Tooltip("The maximum health of the unit")]
+    private float maxHealth = 10f;
+    private float currentHealth;
+
+    [SerializeField]
     [Tooltip("The unit prefab that this building can spawn")]
     private GameObject[] unitPrefabs;
 
@@ -21,6 +26,10 @@ public class BuildingController : MonoBehaviour
     private const int QUEUE_MAX = 5;
 
     [SerializeField]
+    [Tooltip("The distance from the building that it spawns units")]
+    private float spawnDist = 1f;
+
+    [SerializeField]
     [Tooltip("The Colour to show the building is placeable")]
     private Color placeableColor;
 
@@ -31,6 +40,10 @@ public class BuildingController : MonoBehaviour
     [SerializeField]
     [Tooltip("The Colour to show the building is in construction")]
     private Color constructionColor;
+
+    [SerializeField]
+    [Tooltip("This building's rallypoint")]
+    private GameObject rallyPoint;
 
     private enum State { placing, building, ready};
     private State state;
@@ -138,8 +151,11 @@ public class BuildingController : MonoBehaviour
 
     private void SpawnUnit(GameObject unit)
     {
+        Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y - GetComponentInChildren<Collider>().bounds.extents.y + unit.GetComponentInChildren<Collider>().bounds.extents.y, transform.position.z);
+        spawnPos = spawnPos + transform.forward * spawnDist;
         GameObject newUnit = Instantiate(unit);
-        newUnit.transform.position = new Vector3(transform.position.x, newUnit.GetComponentInChildren<Collider>().bounds.extents.y, transform.position.z + 1);
+        newUnit.transform.position = spawnPos;
+        newUnit.GetComponent<UnitController>().MoveOrder(rallyPoint.transform.position);
     }
 
     public KeyCode[] GetHotKeys()
@@ -161,5 +177,29 @@ public class BuildingController : MonoBehaviour
     {
         transform.Translate(-Vector3.up * GetComponentInChildren<Collider>().bounds.size.y);
         state = State.building;
+    }
+
+    public void RallyPointVisible(bool state)
+    {
+        rallyPoint.GetComponentInChildren<MeshRenderer>().enabled = state;
+    }
+
+    public void SetRallyPointPosition(Vector3 position)
+    {
+        rallyPoint.transform.position = position;
+    }
+
+    public void Damage(float damage)
+    {
+        currentHealth -= damage;
+        if (currentHealth <= 0)
+        {
+            Kill();
+        }
+    }
+
+    public void Kill()
+    {
+        Destroy(transform.root.gameObject);
     }
 }
