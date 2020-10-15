@@ -24,6 +24,15 @@ public class MouseManager : MonoBehaviour
     [Tooltip("The selection indicator prefab")]
     private GameObject selectionIndicator;
 
+    [SerializeField]
+    [Tooltip("The selection box")]
+    private RectTransform selectionBox;
+
+    [SerializeField]
+    [Tooltip("The minimum change in position before the selection box will be drawn")]
+    private float boxSelectBuffer = 0.5f;
+    private Vector2 boxStartPos;
+
     public enum MouseState { idle, placing};
     public MouseState mouseState;
 
@@ -80,8 +89,10 @@ public class MouseManager : MonoBehaviour
             case MouseState.idle:
                 if (Input.GetMouseButtonDown(0))
                 {
+                    boxStartPos = Input.mousePosition;
                     if (!IsPointerOverUIElement())
                     {
+
                         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
                         RaycastHit hitInfo;
@@ -90,7 +101,7 @@ public class MouseManager : MonoBehaviour
                             GameObject hitObject = hitInfo.transform.root.gameObject;
                             Debug.Log(hitObject.name);
 
-                            if(!Input.GetKey(KeyCode.LeftShift))
+                            if (!Input.GetKey(KeyCode.LeftShift))
                             {
                                 ClearSelection();
                             }
@@ -107,30 +118,60 @@ public class MouseManager : MonoBehaviour
                         }
                     }
                 }
+                if (Input.GetMouseButton(0) && (boxStartPos - (Vector2)Input.mousePosition).magnitude > boxSelectBuffer)
+                {
+                    UpdateSelectionBox(Input.mousePosition);
+                }
+                if (Input.GetMouseButtonUp(0))
+                {
+                    ReleaseSelectionBox();
+                }
                 break;
             case MouseState.placing:
                 MoveCurrentObjectToMouse();
                 RotateFromMouseWheel();
                 ReleaseIfClicked();
                 break;
+
+        }
+        if(selectedObjects.Count > 1)
+        {
+            foreach (GameObject gameObject in selectedObjects)
+            {
+                gameObject.GetComponent<BaseController>().ClearUI();
+            }
         }
     }
 
     private void ClearSelection()
     {
-        if (selectedObjects != null && selectedObjects.Count != 0)
+        //if (selectedObjects != null && selectedObjects.Count != 0)
+        //{
+        //    if (selectedObjects[0].CompareTag("Building"))
+        //    {
+        //        if(selectedObjects[0].GetComponent<SpawnBuildingController>())
+        //        {
+        //            selectedObjects[0].GetComponent<SpawnBuildingController>().RallyPointVisible(false);
+        //        }
+        //    }
+
+        //    selectedObjects[0].GetComponent<BaseController>().ClearUI();
+        //}
+
+        foreach (GameObject gameObject in selectedObjects)
         {
-            if (selectedObjects[0].CompareTag("Building"))
+            if(gameObject.CompareTag("Building"))
             {
-                if(selectedObjects[0].GetComponent<SpawnBuildingController>())
+                if(gameObject.GetComponent<SpawnBuildingController>())
                 {
-                    selectedObjects[0].GetComponent<SpawnBuildingController>().RallyPointVisible(false);
+                    gameObject.GetComponent<SpawnBuildingController>().RallyPointVisible(false);
                 }
             }
 
-            selectedObjects[0].GetComponent<BaseController>().ClearUI();
+            gameObject.GetComponent<BaseController>().ClearUI();
         }
-        foreach(GameObject gameObject in GameObject.FindGameObjectsWithTag("Selection_Indicator"))
+
+        foreach (GameObject gameObject in GameObject.FindGameObjectsWithTag("Selection_Indicator"))
         {
             Destroy(gameObject);
         }
@@ -162,16 +203,44 @@ public class MouseManager : MonoBehaviour
                     selectedObjects[0].GetComponent<BaseController>().GetButtons()[i].onClick.AddListener(() => BuildingButtonControl(index));
                 }
             }
-            else
+        }
+    }
+
+    private void UpdateSelectionBox(Vector2 currentMousePos)
+    {
+        if(!selectionBox.gameObject.activeInHierarchy)
+        {
+            selectionBox.gameObject.SetActive(true);
+        }
+
+        float width = currentMousePos.x - boxStartPos.x;
+        float height = currentMousePos.y - boxStartPos.y;
+
+        selectionBox.sizeDelta = new Vector2(Mathf.Abs(width), Mathf.Abs(height));
+        selectionBox.anchoredPosition = boxStartPos + new Vector2(width / 2, height / 2);
+    }
+
+    private void ReleaseSelectionBox()
+    {
+        if(selectionBox.gameObject.activeInHierarchy)
+        {
+            selectionBox.gameObject.SetActive(false);
+
+            Vector2 min = selectionBox.anchoredPosition - (selectionBox.sizeDelta / 2);
+            Vector2 max = selectionBox.anchoredPosition + (selectionBox.sizeDelta / 2);
+
+            foreach (GameObject unit in GameObject.FindGameObjectsWithTag("Unit"))
             {
-                foreach(GameObject gameObject in selectedObjects)
+                if (unit.GetComponent<UnitController>().GetTeam() == team)
                 {
-
-
-                    gameObject.GetComponent<BaseController>().ClearUI();
+                    Vector3 screenMin = Camera.main.WorldToScreenPoint(unit.GetComponentInChildren<Collider>().bounds.min);
+                    Vector3 screenMax = Camera.main.WorldToScreenPoint(unit.GetComponentInChildren<Collider>().bounds.max);
+                    if (screenMax.x > min.x && screenMin.x < max.x && screenMax.y > min.y && screenMin.y < max.y)
+                    {
+                        SelectObject(unit);
+                    }
                 }
             }
-
         }
     }
 
