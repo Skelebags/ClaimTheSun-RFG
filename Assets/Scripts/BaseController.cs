@@ -95,6 +95,9 @@ public class BaseController : MonoBehaviour
         {
             button.onClick.RemoveAllListeners();
         }
-        Destroy(uiPanel);
+        if(uiPanel)
+        {
+            Destroy(uiPanel);
+        }
     }
 }

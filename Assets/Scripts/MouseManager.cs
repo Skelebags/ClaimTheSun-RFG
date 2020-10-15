@@ -20,11 +20,14 @@ public class MouseManager : MonoBehaviour
     [Range(0, 9)]
     protected int team = 0;
 
+    [SerializeField]
+    [Tooltip("The selection indicator prefab")]
+    private GameObject selectionIndicator;
 
     public enum MouseState { idle, placing};
     public MouseState mouseState;
 
-    public GameObject selectedObject;
+    public List<GameObject> selectedObjects;
 
     private Dictionary<KeyCode, GameObject> keyObjDict;
 
@@ -40,6 +43,7 @@ public class MouseManager : MonoBehaviour
 
     void Start()
     {
+        selectedObjects = new List<GameObject>();
         groundMask = LayerMask.GetMask("Ground");
         keyObjDict = new Dictionary<KeyCode, GameObject>();
         for(int i = 0; i < hotKeys.Length; i++)
@@ -52,17 +56,19 @@ public class MouseManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (selectedObject != null)
+        if (selectedObjects != null && selectedObjects.Count != 0)
         {
-            switch (selectedObject.tag)
-            {
-                case "Building":
-                    HandleBuildingControls();
-                    break;
-                case "Unit":
-                    HandleUnitControls();
-                    break;
-            }
+            //switch (selectedObjects[0].tag)
+            //{
+            //    case "Building":
+            //        HandleBuildingControls();
+            //        break;
+            //    case "Unit":
+            //        HandleUnitControls();
+            //        break;
+            //}
+            HandleBuildingControls();
+            HandleUnitControls();
         }
         else
         {
@@ -84,7 +90,7 @@ public class MouseManager : MonoBehaviour
                             GameObject hitObject = hitInfo.transform.root.gameObject;
                             Debug.Log(hitObject.name);
 
-                            if (selectedObject != null)
+                            if(!Input.GetKey(KeyCode.LeftShift))
                             {
                                 ClearSelection();
                             }
@@ -92,15 +98,7 @@ public class MouseManager : MonoBehaviour
                             if (hitObject.GetComponent<BaseController>().GetTeam() == team)
                             {
                                 SelectObject(hitObject);
-                                hitObject.GetComponent<BaseController>().GenerateUI();
 
-                                
-                                for (int i = 0; i < selectedObject.GetComponent<BaseController>().GetButtons().Length; i++)
-                                {
-                                    Debug.Log(i);
-                                    int index = i;
-                                    selectedObject.GetComponent<BaseController>().GetButtons()[i].onClick.AddListener(() => BuildingButtonControl(index));
-                                }
                             }
                         }
                         else
@@ -120,31 +118,60 @@ public class MouseManager : MonoBehaviour
 
     private void ClearSelection()
     {
-        if(selectedObject != null)
+        if (selectedObjects != null && selectedObjects.Count != 0)
         {
-            if (selectedObject.CompareTag("Building"))
+            if (selectedObjects[0].CompareTag("Building"))
             {
-                if(selectedObject.GetComponent<SpawnBuildingController>())
+                if(selectedObjects[0].GetComponent<SpawnBuildingController>())
                 {
-                    selectedObject.GetComponent<SpawnBuildingController>().RallyPointVisible(false);
+                    selectedObjects[0].GetComponent<SpawnBuildingController>().RallyPointVisible(false);
                 }
             }
 
-            selectedObject.GetComponent<BaseController>().ClearUI();
+            selectedObjects[0].GetComponent<BaseController>().ClearUI();
         }
-
-        selectedObject = null;
+        foreach(GameObject gameObject in GameObject.FindGameObjectsWithTag("Selection_Indicator"))
+        {
+            Destroy(gameObject);
+        }
+        selectedObjects.Clear();
     }
 
     private void SelectObject(GameObject obj)
     {
-        selectedObject = obj;
-        if (selectedObject.CompareTag("Building"))
+        if (selectedObjects != null)
         {
-            if (selectedObject.GetComponent<SpawnBuildingController>())
+            selectedObjects.Add(obj);
+            GameObject indicator = Instantiate(selectionIndicator, selectedObjects[0].transform.position, selectedObjects[0].transform.rotation);
+            indicator.GetComponent<SelectionIndicator>().Attach(obj);
+            if(selectedObjects.Count == 1)
             {
-                selectedObject.GetComponent<SpawnBuildingController>().RallyPointVisible(true);
+                if (selectedObjects[0].CompareTag("Building"))
+                {
+                    if (selectedObjects[0].GetComponent<SpawnBuildingController>())
+                    {
+                        selectedObjects[0].GetComponent<SpawnBuildingController>().RallyPointVisible(true);
+                    }
+                }
+
+                selectedObjects[0].GetComponent<BaseController>().GenerateUI();
+
+                for (int i = 0; i < selectedObjects[0].GetComponent<BaseController>().GetButtons().Length; i++)
+                {
+                    int index = i;
+                    selectedObjects[0].GetComponent<BaseController>().GetButtons()[i].onClick.AddListener(() => BuildingButtonControl(index));
+                }
             }
+            else
+            {
+                foreach(GameObject gameObject in selectedObjects)
+                {
+
+
+                    gameObject.GetComponent<BaseController>().ClearUI();
+                }
+            }
+
         }
     }
 
@@ -171,9 +198,9 @@ public class MouseManager : MonoBehaviour
 
     private void HandleBuildingControls()
     {
-        if(selectedObject != null)
+        if (selectedObjects != null && selectedObjects.Count == 1)
         {
-            if (selectedObject.GetComponent<SpawnBuildingController>())
+            if (selectedObjects[0].GetComponent<SpawnBuildingController>())
             {
 
                 if (Input.GetMouseButtonDown(1))
@@ -186,19 +213,19 @@ public class MouseManager : MonoBehaviour
                         GameObject hitObject = hitInfo.transform.root.gameObject;
                         if (hitObject.CompareTag("Ground"))
                         {
-                            selectedObject.GetComponent<SpawnBuildingController>().SetRallyPointPosition(hitInfo.point);
+                            selectedObjects[0].GetComponent<SpawnBuildingController>().SetRallyPointPosition(hitInfo.point);
                         }
                     }
                 }
 
-                foreach (KeyCode hotKey in selectedObject.GetComponent<SpawnBuildingController>().GetHotKeys())
+                foreach (KeyCode hotKey in selectedObjects[0].GetComponent<SpawnBuildingController>().GetHotKeys())
                 {
                     if (Input.GetKeyDown(hotKey))
                     {
-                        if (gc.CanAfford(selectedObject.GetComponent<SpawnBuildingController>().GetUnitCost(hotKey)))
+                        if (gc.CanAfford(selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitCost(hotKey)))
                         {
-                            gc.SpendEnergy(selectedObject.GetComponent<SpawnBuildingController>().GetUnitCost(hotKey));
-                            selectedObject.GetComponent<SpawnBuildingController>().AddToQueue(hotKey);
+                            gc.SpendEnergy(selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitCost(hotKey));
+                            selectedObjects[0].GetComponent<SpawnBuildingController>().AddToQueue(hotKey);
                         }
                         else
                         {
@@ -207,18 +234,28 @@ public class MouseManager : MonoBehaviour
                     }
                 }
             }
+        } else 
+        if(selectedObjects.Count > 1)
+        {
+            foreach(GameObject gameObject in selectedObjects)
+            {
+                if(gameObject.GetComponent<SpawnBuildingController>())
+                {
+                    gameObject.GetComponent<SpawnBuildingController>().RallyPointVisible(false);
+                }
+            }
         }
     }
 
     private void BuildingButtonControl(int index)
     {
-        if (selectedObject.GetComponent<SpawnBuildingController>())
+        if (selectedObjects[0].GetComponent<SpawnBuildingController>())
         {
-            KeyCode hotKey = selectedObject.GetComponent<SpawnBuildingController>().GetHotKeys()[index];
-            if (gc.CanAfford(selectedObject.GetComponent<SpawnBuildingController>().GetUnitCost(hotKey)))
+            KeyCode hotKey = selectedObjects[0].GetComponent<SpawnBuildingController>().GetHotKeys()[index];
+            if (gc.CanAfford(selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitCost(hotKey)))
             {
-                gc.SpendEnergy(selectedObject.GetComponent<SpawnBuildingController>().GetUnitCost(hotKey));
-                selectedObject.GetComponent<SpawnBuildingController>().AddToQueue(hotKey);
+                gc.SpendEnergy(selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitCost(hotKey));
+                selectedObjects[0].GetComponent<SpawnBuildingController>().AddToQueue(hotKey);
             }
             else
             {
@@ -229,10 +266,20 @@ public class MouseManager : MonoBehaviour
 
     private void HandleUnitControls()
     {
-        UnitController unitController = selectedObject.GetComponent<UnitController>();
-        unitController.UpdateUI();
+        List<UnitController> unitControllers = new List<UnitController>();
+        foreach(GameObject gameObject in selectedObjects)
+        {
+            if(gameObject.CompareTag("Unit"))
+            {
+                unitControllers.Add(gameObject.GetComponent<UnitController>());
+            }
+        }
+        if(unitControllers.Count == 1)
+        {
+            unitControllers[0].UpdateUI();
+        }
 
-        if (selectedObject != null)
+        if (selectedObjects != null && selectedObjects.Count != 0)
         {
             // Move the selected unit with the right mouse button
             if(Input.GetMouseButtonDown(1))
@@ -244,19 +291,22 @@ public class MouseManager : MonoBehaviour
                 if (Physics.Raycast(ray, out hitInfo))
                 {
                     GameObject hitObject = hitInfo.transform.root.gameObject;
-                    if (hitObject.CompareTag("Ground"))
+                    foreach(UnitController controller in unitControllers)
                     {
-                        unitController.MoveOrder(hitInfo.point);
-                    }
-                    if(hitObject.CompareTag("Building") || hitObject.CompareTag("Unit"))
-                    {
-                        if(hitObject.GetComponent<BaseController>().GetTeam() != team)
+                        if (hitObject.CompareTag("Ground"))
                         {
-                            unitController.AttackOrder(hitObject);
+                            controller.MoveOrder(hitInfo.point);
                         }
-                        else
+                        if (hitObject.CompareTag("Building") || hitObject.CompareTag("Unit"))
                         {
-                            unitController.MoveOrder(hitObject.transform.position);
+                            if (hitObject.GetComponent<BaseController>().GetTeam() != team)
+                            {
+                                controller.AttackOrder(hitObject);
+                            }
+                            else
+                            {
+                                controller.MoveOrder(hitObject.transform.position);
+                            }
                         }
                     }
                 }

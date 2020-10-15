@@ -100,6 +100,9 @@ public class UnitController : BaseController
 
     public void UpdateUI()
     {
-        uiPanel.transform.Find("CURRENT_HEALTH").GetComponent<Text>().text = currentHealth.ToString("#.#") + " / " + maxHealth.ToString();
+        if(uiPanel)
+        {
+            uiPanel.transform.Find("CURRENT_HEALTH").GetComponent<Text>().text = currentHealth.ToString("#.#") + " / " + maxHealth.ToString();
+        }
     }
 }

@@ -4,22 +4,29 @@ using UnityEngine;
 
 public class SelectionIndicator : MonoBehaviour
 {
-    MouseManager mm;
-
     [Tooltip("How much larger than the selected object should the indicator be")]
     public float sizeMultiplier = 1.25f;
 
-    void Start()
+    private GameObject attachedObject;
+
+    void Awake()
     {
-        mm = FindObjectOfType<MouseManager>();
+        MeshRenderer[] meshRenderers = GetComponentsInChildren<MeshRenderer>();
+
+        foreach (MeshRenderer mr in meshRenderers)
+        {
+            mr.enabled = false;
+        }
     }
 
     void Update()
     {
-        if(mm.selectedObject != null)
+        //if(mm.selectedObject != null)
+        if(attachedObject != null)
         {
 
-            Bounds bigBounds = mm.selectedObject.GetComponentInChildren<Renderer>().bounds;
+            //Bounds bigBounds = mm.selectedObject.GetComponentInChildren<Renderer>().bounds;
+            Bounds bigBounds =attachedObject.GetComponentInChildren<Renderer>().bounds;
 
             transform.position = new Vector3(bigBounds.center.x, 0, bigBounds.center.z);
             transform.localScale = new Vector3(bigBounds.size.x * sizeMultiplier, bigBounds.size.y * sizeMultiplier, bigBounds.size.z * sizeMultiplier);
@@ -40,5 +47,11 @@ public class SelectionIndicator : MonoBehaviour
                 mr.enabled = false;
             }
         }
+    }
+
+    public void Attach(GameObject targetObject)
+    {
+        attachedObject = targetObject;
+
     }
 }

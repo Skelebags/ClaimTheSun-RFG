@@ -8,6 +8,7 @@ TagManager:
   - Unit
   - Building
   - Game_Manager
+  - Selection_Indicator
   layers:
   - Default
   - TransparentFX
