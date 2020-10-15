@@ -104,7 +104,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7646140477726321729}
-  - component: {fileID: 4179485860689362112}
+  - component: {fileID: 5639353840968915524}
   - component: {fileID: 277332654504470372}
   - component: {fileID: 2581869413418467192}
   m_Layer: 0
@@ -130,7 +130,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4179485860689362112
+--- !u!114 &5639353840968915524
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -139,19 +139,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 2087532202728917908}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 943a0d5ec36b92447b18a0390d901045, type: 3}
+  m_Script: {fileID: 11500000, guid: 15104ce303b53e74aa82c651918587ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   buildTime: 3
-  buildCost: 50
+  buildCost: 25
   maxHealth: 10
+  team: 0
+  uiPrefab: {fileID: 8708991235873039805, guid: b34587fa427c14a41934d432919490b4, type: 3}
+  placeableColor: {r: 0.12941177, g: 0.6784314, b: 0.2901961, a: 0}
+  unplaceableColor: {r: 0.8117648, g: 0.08627451, b: 0.08627451, a: 0}
+  constructionColor: {r: 0.16862746, g: 0.227451, b: 0.6313726, a: 0}
   unitPrefabs:
   - {fileID: 8348443171501456396, guid: bf37d3002d62d8949a84882b643fd372, type: 3}
   hotKeys: 31000000
   spawnDist: 1
-  placeableColor: {r: 0.13136347, g: 0.6792453, b: 0.28895077, a: 0}
-  unplaceableColor: {r: 0.8113208, g: 0.08802067, b: 0.08802067, a: 0}
-  constructionColor: {r: 0.1699448, g: 0.22868347, b: 0.6320754, a: 0}
   rallyPoint: {fileID: 3461320903200403846}
 --- !u!208 &277332654504470372
 NavMeshObstacle:
@@ -209,7 +211,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3461320903200403846}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1, y: -0.45, z: 0}
+  m_LocalPosition: {x: 0, y: -0.45, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4022673335001011203}

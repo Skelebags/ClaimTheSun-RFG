@@ -2,22 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
-public class UnitController : MonoBehaviour
+public class UnitController : BaseController
 {
-    [SerializeField]
-    [Tooltip("Time taken in seconds to build this unit")]
-    private float buildTime = 5f;
-
-    [SerializeField]
-    [Tooltip("How much energy this costs to build")]
-    private float buildCost = 5f;
-
-    [SerializeField]
-    [Tooltip("The maximum health of the unit")]
-    private float maxHealth = 10f;
-    private float currentHealth { get; set; }
-
     [SerializeField]
     [Tooltip("The amount of damage dealt by this unit")]
     private float attackDamage = 5f;
@@ -46,10 +34,10 @@ public class UnitController : MonoBehaviour
     private enum State { idle, attacking}
     private State state;
     
-    void Awake()
+    new protected virtual void Awake()
     {
+        base.Awake();
         agent = GetComponent<NavMeshAgent>();
-        currentHealth = maxHealth;
         state = State.idle;
     }
 
@@ -68,7 +56,6 @@ public class UnitController : MonoBehaviour
                 }
                 else
                 {
-                    agent.SetDestination(attackTarget.transform.position - (attackTarget.transform.position - transform.position).normalized * (attackRange * idealRange));
                     if((attackTarget.transform.position - transform.position).magnitude <= attackRange)
                     {
                         if((agent.desiredVelocity == Vector3.zero) || attackMove)
@@ -90,6 +77,7 @@ public class UnitController : MonoBehaviour
                     }
                     else
                     {
+                        agent.SetDestination(attackTarget.transform.position - (attackTarget.transform.position - transform.position).normalized * (attackRange * idealRange));
                         attackTimer = 0f;
                     }
                 }
@@ -110,27 +98,8 @@ public class UnitController : MonoBehaviour
         attackTarget = target;
     }
 
-    public float GetBuildTime()
+    public void UpdateUI()
     {
-        return buildTime;
-    }
-
-    public float GetBuildCost()
-    {
-        return buildCost;
-    }
-
-    public void Damage(float damage)
-    {
-        currentHealth -= damage;
-        if(currentHealth <= 0)
-        {
-            Kill();
-        }
-    }
-
-    public void Kill()
-    {
-        Destroy(transform.root.gameObject);
+        uiPanel.transform.Find("CURRENT_HEALTH").GetComponent<Text>().text = currentHealth.ToString("#.#") + " / " + maxHealth.ToString();
     }
 }

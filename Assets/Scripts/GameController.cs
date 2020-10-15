@@ -53,6 +53,11 @@ public class GameController : MonoBehaviour
         currentEnergy -= energyCost;
     }
 
+    public void AddEnergy(float energy)
+    {
+        currentEnergy += energy;
+    }
+
     public float GetEnergyPercentage()
     {
         return currentEnergy / maxEnergy;

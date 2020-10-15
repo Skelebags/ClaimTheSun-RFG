@@ -2,38 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
-public class BuildingController : MonoBehaviour
+public class BuildingController : BaseController
 {
-    [SerializeField]
-    [Tooltip("How long this building takes to build in seconds")]
-    private float buildTime = 5f;
-
-    [SerializeField]
-    [Tooltip("How much energy this costs to build")]
-    private float buildCost = 5f;
-
-    [SerializeField]
-    [Tooltip("The maximum health of the unit")]
-    private float maxHealth = 10f;
-    private float currentHealth;
-
-    [SerializeField]
-    [Tooltip("The unit prefab that this building can spawn")]
-    private GameObject[] unitPrefabs;
-
-    [SerializeField]
-    [Tooltip("The Hotkey to place build each unit")]
-    private KeyCode[] hotKeys = { KeyCode.Alpha1 };
-
-    [SerializeField]
-    [Tooltip("The Maximum size of the build queue")]
-    private const int QUEUE_MAX = 5;
-
-    [SerializeField]
-    [Tooltip("The distance from the building that it spawns units")]
-    private float spawnDist = 1f;
-
     [SerializeField]
     [Tooltip("The Colour to show the building is placeable")]
     private Color placeableColor;
@@ -46,19 +18,10 @@ public class BuildingController : MonoBehaviour
     [Tooltip("The Colour to show the building is in construction")]
     private Color constructionColor;
 
-    [SerializeField]
-    [Tooltip("This building's rallypoint")]
-    private GameObject rallyPoint;
-
-    private enum State { placing, building, ready};
-    private State state;
-
-    private Dictionary<KeyCode, GameObject> keyObjDict;
-
-    private List<GameObject> buildQueue;
+    protected enum State { placing, building, ready};
+    protected State state;
 
     private float buildTimer;
-    private float unitTimer;
 
     private MeshRenderer[] meshRenderers;
     private Color[] baseColors;
@@ -68,20 +31,11 @@ public class BuildingController : MonoBehaviour
     private bool canPlace;
     private bool isIntersecting;
 
-    private LayerMask groundMask;
-
-    // Start is called before the first frame update
-    void Awake()
+    // Awake is called when the object is first instantiated
+    protected new virtual void Awake()
     {
+        base.Awake();
         state = State.placing;
-        buildQueue = new List<GameObject>();
-        buildTimer = 0f;
-        unitTimer = 0f;
-        keyObjDict = new Dictionary<KeyCode, GameObject>();
-        for (int i = 0; i < hotKeys.Length; i++)
-        {
-            keyObjDict.Add(hotKeys[i], unitPrefabs[i]);
-        }
 
         meshRenderers = GetComponentsInChildren<MeshRenderer>();
         baseColors = new Color[meshRenderers.Length];
@@ -99,26 +53,17 @@ public class BuildingController : MonoBehaviour
 
         isIntersecting = false;
         canPlace = true;
-        groundMask = LayerMask.GetMask("Ground");
+        
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         switch(state)
         {
             case State.ready:
                 GetComponent<Rigidbody>().isKinematic = true;
-                if (buildQueue.Count > 0)
-                {
-                    unitTimer += Time.deltaTime;
-                    if (unitTimer >= buildQueue[0].GetComponent<UnitController>().GetBuildTime())
-                    {
-                        SpawnUnit(buildQueue[0]);
-                        buildQueue.RemoveAt(0);
-                        unitTimer = 0f;
-                    }
-                }
+
                 break;
             case State.building:
                 if (buildTimer >= buildTime)
@@ -129,6 +74,7 @@ public class BuildingController : MonoBehaviour
                     }
                     state = State.ready;
                     buildTimer = 0;
+                    
                 }
                 else
                 {
@@ -138,6 +84,7 @@ public class BuildingController : MonoBehaviour
                         meshRenderer.material.color = constructionColor;
                     }
                     buildTimer += Time.deltaTime;
+                    
                 }
                 GetComponent<Rigidbody>().isKinematic = true;
                 break;
@@ -161,43 +108,6 @@ public class BuildingController : MonoBehaviour
         }
     }
 
-    public void AddToQueue(KeyCode key)
-    {
-        if(buildQueue.Count < QUEUE_MAX)
-        {
-            buildQueue.Add(keyObjDict[key]);
-        }
-    }
-
-    private void SpawnUnit(GameObject unit)
-    {
-        Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y - GetComponentInChildren<Collider>().bounds.extents.y + unit.GetComponentInChildren<Collider>().bounds.extents.y, transform.position.z);
-        spawnPos = spawnPos + transform.forward * spawnDist;
-        GameObject newUnit = Instantiate(unit);
-        newUnit.transform.position = spawnPos;
-        newUnit.GetComponent<UnitController>().MoveOrder(rallyPoint.transform.position);
-    }
-
-    public KeyCode[] GetHotKeys()
-    {
-        return hotKeys;
-    }
-
-    public float GetUnitCost(KeyCode key)
-    {
-        return keyObjDict[key].GetComponent<UnitController>().GetBuildCost();
-    }
-
-    public float GetBuildTime()
-    {
-        return buildTime;
-    }
-
-    public float GetBuildCost()
-    {
-        return buildCost;
-    }
-
     public void SetPlaceable(bool placeable)
     {
         canPlace = placeable;
@@ -218,30 +128,6 @@ public class BuildingController : MonoBehaviour
         GetComponent<NavMeshObstacle>().enabled = true;
 
         state = State.building;
-    }
-
-    public void RallyPointVisible(bool state)
-    {
-        rallyPoint.GetComponentInChildren<MeshRenderer>().enabled = state;
-    }
-
-    public void SetRallyPointPosition(Vector3 position)
-    {
-        rallyPoint.transform.position = position;
-    }
-
-    public void Damage(float damage)
-    {
-        currentHealth -= damage;
-        if (currentHealth <= 0)
-        {
-            Kill();
-        }
-    }
-
-    public void Kill()
-    {
-        Destroy(transform.root.gameObject);
     }
 
     private void OnTriggerEnter(Collider collision)
