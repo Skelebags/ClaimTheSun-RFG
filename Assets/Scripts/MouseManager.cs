@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class MouseManager : MonoBehaviour
 {
@@ -12,6 +14,11 @@ public class MouseManager : MonoBehaviour
     [SerializeField]
     [Tooltip("The Hotkey to place this building")]
     private KeyCode[] hotKeys = { KeyCode.Alpha1 };
+
+    [SerializeField]
+    [Tooltip("Which team this entity is on")]
+    [Range(0, 9)]
+    protected int team = 0;
 
 
     public enum MouseState { idle, placing};
@@ -27,8 +34,9 @@ public class MouseManager : MonoBehaviour
 
     private bool canPlace;
 
-    private LayerMask groundMask;
+    private GameController gc;
 
+    private LayerMask groundMask;
 
     void Start()
     {
@@ -38,6 +46,7 @@ public class MouseManager : MonoBehaviour
         {
             keyObjDict.Add(hotKeys[i], placeableObjectPrefabs[i]);
         }
+        gc = GetComponent<GameController>();
     }
 
     // Update is called once per frame
@@ -57,7 +66,6 @@ public class MouseManager : MonoBehaviour
         }
         else
         {
-
             HandleNewObjectHotkey();
         }
 
@@ -66,23 +74,39 @@ public class MouseManager : MonoBehaviour
             case MouseState.idle:
                 if (Input.GetMouseButtonDown(0))
                 {
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                    RaycastHit hitInfo;
-                    if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, ~groundMask))
+                    if (!IsPointerOverUIElement())
                     {
-                        GameObject hitObject = hitInfo.transform.root.gameObject;
+                        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                        if(selectedObject != null)
+                        RaycastHit hitInfo;
+                        if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, ~groundMask))
+                        {
+                            GameObject hitObject = hitInfo.transform.root.gameObject;
+                            Debug.Log(hitObject.name);
+
+                            if (selectedObject != null)
+                            {
+                                ClearSelection();
+                            }
+
+                            if (hitObject.GetComponent<BaseController>().GetTeam() == team)
+                            {
+                                SelectObject(hitObject);
+                                hitObject.GetComponent<BaseController>().GenerateUI();
+
+                                
+                                for (int i = 0; i < selectedObject.GetComponent<BaseController>().GetButtons().Length; i++)
+                                {
+                                    Debug.Log(i);
+                                    int index = i;
+                                    selectedObject.GetComponent<BaseController>().GetButtons()[i].onClick.AddListener(() => BuildingButtonControl(index));
+                                }
+                            }
+                        }
+                        else
                         {
                             ClearSelection();
                         }
-                        SelectObject(hitObject);
-
-                    }
-                    else
-                    {
-                        ClearSelection();
                     }
                 }
                 break;
@@ -96,10 +120,19 @@ public class MouseManager : MonoBehaviour
 
     private void ClearSelection()
     {
-        if(selectedObject.CompareTag("Building"))
+        if(selectedObject != null)
         {
-            selectedObject.GetComponent<BuildingController>().RallyPointVisible(false);
+            if (selectedObject.CompareTag("Building"))
+            {
+                if(selectedObject.GetComponent<SpawnBuildingController>())
+                {
+                    selectedObject.GetComponent<SpawnBuildingController>().RallyPointVisible(false);
+                }
+            }
+
+            selectedObject.GetComponent<BaseController>().ClearUI();
         }
+
         selectedObject = null;
     }
 
@@ -108,7 +141,10 @@ public class MouseManager : MonoBehaviour
         selectedObject = obj;
         if (selectedObject.CompareTag("Building"))
         {
-            selectedObject.GetComponent<BuildingController>().RallyPointVisible(true);
+            if (selectedObject.GetComponent<SpawnBuildingController>())
+            {
+                selectedObject.GetComponent<SpawnBuildingController>().RallyPointVisible(true);
+            }
         }
     }
 
@@ -126,6 +162,7 @@ public class MouseManager : MonoBehaviour
                 else
                 {
                     currentPlaceableObject = Instantiate(keyObjDict[hotKey]);
+                    currentPlaceableObject.GetComponent<BaseController>().SetTeam(team);
                     mouseState = MouseState.placing;
                 }
             }
@@ -136,26 +173,56 @@ public class MouseManager : MonoBehaviour
     {
         if(selectedObject != null)
         {
-            if(Input.GetMouseButtonDown(1))
+            if (selectedObject.GetComponent<SpawnBuildingController>())
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                RaycastHit hitInfo;
-                if (Physics.Raycast(ray, out hitInfo))
+                if (Input.GetMouseButtonDown(1))
                 {
-                    if (hitInfo.transform.root.gameObject.CompareTag("Ground"))
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+                    RaycastHit hitInfo;
+                    if (Physics.Raycast(ray, out hitInfo))
                     {
-                        selectedObject.GetComponent<BuildingController>().SetRallyPointPosition(hitInfo.point);
+                        GameObject hitObject = hitInfo.transform.root.gameObject;
+                        if (hitObject.CompareTag("Ground"))
+                        {
+                            selectedObject.GetComponent<SpawnBuildingController>().SetRallyPointPosition(hitInfo.point);
+                        }
+                    }
+                }
+
+                foreach (KeyCode hotKey in selectedObject.GetComponent<SpawnBuildingController>().GetHotKeys())
+                {
+                    if (Input.GetKeyDown(hotKey))
+                    {
+                        if (gc.CanAfford(selectedObject.GetComponent<SpawnBuildingController>().GetUnitCost(hotKey)))
+                        {
+                            gc.SpendEnergy(selectedObject.GetComponent<SpawnBuildingController>().GetUnitCost(hotKey));
+                            selectedObject.GetComponent<SpawnBuildingController>().AddToQueue(hotKey);
+                        }
+                        else
+                        {
+                            Debug.Log("Not Enough Energy");
+                        }
                     }
                 }
             }
+        }
+    }
 
-            foreach (KeyCode hotKey in selectedObject.GetComponent<BuildingController>().GetHotKeys())
+    private void BuildingButtonControl(int index)
+    {
+        if (selectedObject.GetComponent<SpawnBuildingController>())
+        {
+            KeyCode hotKey = selectedObject.GetComponent<SpawnBuildingController>().GetHotKeys()[index];
+            if (gc.CanAfford(selectedObject.GetComponent<SpawnBuildingController>().GetUnitCost(hotKey)))
             {
-                if (Input.GetKeyDown(hotKey))
-                {
-                    selectedObject.GetComponent<BuildingController>().AddToQueue(hotKey);
-                }
+                gc.SpendEnergy(selectedObject.GetComponent<SpawnBuildingController>().GetUnitCost(hotKey));
+                selectedObject.GetComponent<SpawnBuildingController>().AddToQueue(hotKey);
+            }
+            else
+            {
+                Debug.Log("Not Enough Energy");
             }
         }
     }
@@ -163,6 +230,7 @@ public class MouseManager : MonoBehaviour
     private void HandleUnitControls()
     {
         UnitController unitController = selectedObject.GetComponent<UnitController>();
+        unitController.UpdateUI();
 
         if (selectedObject != null)
         {
@@ -172,15 +240,24 @@ public class MouseManager : MonoBehaviour
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
                 RaycastHit hitInfo;
+
                 if (Physics.Raycast(ray, out hitInfo))
                 {
-                    if(hitInfo.transform.root.gameObject.CompareTag("Ground"))
+                    GameObject hitObject = hitInfo.transform.root.gameObject;
+                    if (hitObject.CompareTag("Ground"))
                     {
                         unitController.MoveOrder(hitInfo.point);
                     }
-                    if(hitInfo.transform.root.gameObject.CompareTag("Building") || hitInfo.transform.root.gameObject.CompareTag("Unit"))
+                    if(hitObject.CompareTag("Building") || hitObject.CompareTag("Unit"))
                     {
-                        unitController.AttackOrder(hitInfo.transform.root.gameObject);
+                        if(hitObject.GetComponent<BaseController>().GetTeam() != team)
+                        {
+                            unitController.AttackOrder(hitObject);
+                        }
+                        else
+                        {
+                            unitController.MoveOrder(hitObject.transform.position);
+                        }
                     }
                 }
             }
@@ -196,16 +273,19 @@ public class MouseManager : MonoBehaviour
         if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask))
         {
             canPlace = true;
-            currentPlaceableObject.GetComponent<BuildingController>().SetPlaceable(canPlace);
-            //currentPlaceableObject.GetComponent<Rigidbody>().position = new Vector3(hitInfo.point.x, hitInfo.point.y + currentPlaceableObject.GetComponentInChildren<Collider>().bounds.extents.y, hitInfo.point.z);
             currentPlaceableObject.transform.position = new Vector3(hitInfo.point.x, hitInfo.point.y + currentPlaceableObject.GetComponentInChildren<Collider>().bounds.extents.y, hitInfo.point.z);
             currentPlaceableObject.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
         }
         else
         {
             canPlace = false;
-            currentPlaceableObject.GetComponent<BuildingController>().SetPlaceable(canPlace);
+            mouseWheelRotation = 0;
         }
+        if(!gc.CanAfford(currentPlaceableObject.GetComponent<BuildingController>().GetBuildCost()))
+        {
+            canPlace = false;
+        }
+        currentPlaceableObject.GetComponent<BuildingController>().SetPlaceable(canPlace);
     }
 
     private void RotateFromMouseWheel()
@@ -219,9 +299,41 @@ public class MouseManager : MonoBehaviour
         if(Input.GetMouseButtonDown(0) && canPlace && !currentPlaceableObject.GetComponent<BuildingController>().GetIntersecting())
         {
             currentPlaceableObject.GetComponent<BuildingController>().Place();
+            gc.SpendEnergy(currentPlaceableObject.GetComponent<BuildingController>().GetBuildCost());
             currentPlaceableObject = null;
             mouseState = MouseState.idle;
             mouseWheelRotation = 0f;
         }
+    }
+
+    public int GetTeam()
+    {
+        return team;
+    }
+
+    ///Returns 'true' if we touched or hovering on Unity UI element.
+    public static bool IsPointerOverUIElement()
+    {
+        return IsPointerOverUIElement(GetEventSystemRaycastResults());
+    }
+    ///Returns 'true' if we touched or hovering on Unity UI element.
+    public static bool IsPointerOverUIElement(List<RaycastResult> eventSystemRaysastResults)
+    {
+        for (int index = 0; index < eventSystemRaysastResults.Count; index++)
+        {
+            RaycastResult curRaysastResult = eventSystemRaysastResults[index];
+            if (curRaysastResult.gameObject.layer == LayerMask.NameToLayer("UI"))
+                return true;
+        }
+        return false;
+    }
+    ///Gets all event systen raycast results of current mouse or touch position.
+    static List<RaycastResult> GetEventSystemRaycastResults()
+    {
+        PointerEventData eventData = new PointerEventData(EventSystem.current);
+        eventData.position = Input.mousePosition;
+        List<RaycastResult> raysastResults = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, raysastResults);
+        return raysastResults;
     }
 }
