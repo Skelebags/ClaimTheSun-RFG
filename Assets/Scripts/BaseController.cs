@@ -91,10 +91,16 @@ public class BaseController : MonoBehaviour
     public void ClearUI()
     {
         canvas = null;
-        foreach(Button button in buttons)
+        if(buttons != null)
         {
-            button.onClick.RemoveAllListeners();
+            foreach (Button button in buttons)
+            {
+                button.onClick.RemoveAllListeners();
+            }
         }
-        Destroy(uiPanel);
+        if(uiPanel)
+        {
+            Destroy(uiPanel);
+        }
     }
 }
