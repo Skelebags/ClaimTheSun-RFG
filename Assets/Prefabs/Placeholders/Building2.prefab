@@ -47,7 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 943a0d5ec36b92447b18a0390d901045, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildTime: 5
+  buildTime: 2
+  buildCost: 25
   maxHealth: 10
   unitPrefabs:
   - {fileID: 4812063653225997697, guid: 3af316d06f1085d4b913dcf2fbf6b4bc, type: 3}

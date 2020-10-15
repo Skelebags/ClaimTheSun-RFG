@@ -10,6 +10,10 @@ public class UnitController : MonoBehaviour
     private float buildTime = 5f;
 
     [SerializeField]
+    [Tooltip("How much energy this costs to build")]
+    private float buildCost = 5f;
+
+    [SerializeField]
     [Tooltip("The maximum health of the unit")]
     private float maxHealth = 10f;
     private float currentHealth { get; set; }
@@ -109,6 +113,11 @@ public class UnitController : MonoBehaviour
     public float GetBuildTime()
     {
         return buildTime;
+    }
+
+    public float GetBuildCost()
+    {
+        return buildCost;
     }
 
     public void Damage(float damage)

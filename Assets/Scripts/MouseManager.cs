@@ -27,8 +27,9 @@ public class MouseManager : MonoBehaviour
 
     private bool canPlace;
 
-    private LayerMask groundMask;
+    private GameController gc;
 
+    private LayerMask groundMask;
 
     void Start()
     {
@@ -38,6 +39,7 @@ public class MouseManager : MonoBehaviour
         {
             keyObjDict.Add(hotKeys[i], placeableObjectPrefabs[i]);
         }
+        gc = GetComponent<GameController>();
     }
 
     // Update is called once per frame
@@ -154,7 +156,15 @@ public class MouseManager : MonoBehaviour
             {
                 if (Input.GetKeyDown(hotKey))
                 {
-                    selectedObject.GetComponent<BuildingController>().AddToQueue(hotKey);
+                    if (gc.CanAfford(selectedObject.GetComponent<BuildingController>().GetUnitCost(hotKey)))
+                    {
+                        gc.SpendEnergy(selectedObject.GetComponent<BuildingController>().GetUnitCost(hotKey));
+                        selectedObject.GetComponent<BuildingController>().AddToQueue(hotKey);
+                    }
+                    else
+                    {
+                        Debug.Log("Not Enough Energy");
+                    }
                 }
             }
         }
@@ -196,16 +206,19 @@ public class MouseManager : MonoBehaviour
         if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask))
         {
             canPlace = true;
-            currentPlaceableObject.GetComponent<BuildingController>().SetPlaceable(canPlace);
-            //currentPlaceableObject.GetComponent<Rigidbody>().position = new Vector3(hitInfo.point.x, hitInfo.point.y + currentPlaceableObject.GetComponentInChildren<Collider>().bounds.extents.y, hitInfo.point.z);
             currentPlaceableObject.transform.position = new Vector3(hitInfo.point.x, hitInfo.point.y + currentPlaceableObject.GetComponentInChildren<Collider>().bounds.extents.y, hitInfo.point.z);
             currentPlaceableObject.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
         }
         else
         {
             canPlace = false;
-            currentPlaceableObject.GetComponent<BuildingController>().SetPlaceable(canPlace);
+            mouseWheelRotation = 0;
         }
+        if(!gc.CanAfford(currentPlaceableObject.GetComponent<BuildingController>().GetBuildCost()))
+        {
+            canPlace = false;
+        }
+        currentPlaceableObject.GetComponent<BuildingController>().SetPlaceable(canPlace);
     }
 
     private void RotateFromMouseWheel()
@@ -219,6 +232,7 @@ public class MouseManager : MonoBehaviour
         if(Input.GetMouseButtonDown(0) && canPlace && !currentPlaceableObject.GetComponent<BuildingController>().GetIntersecting())
         {
             currentPlaceableObject.GetComponent<BuildingController>().Place();
+            gc.SpendEnergy(currentPlaceableObject.GetComponent<BuildingController>().GetBuildCost());
             currentPlaceableObject = null;
             mouseState = MouseState.idle;
             mouseWheelRotation = 0f;
