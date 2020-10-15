@@ -215,6 +215,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!224 &427902416 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1330094348641070700, guid: 65e03b32e2a639849a181ec8587426a0, type: 3}
+  m_PrefabInstance: {fileID: 5817419033907938313}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &783866301
 GameObject:
   m_ObjectHideFlags: 0
@@ -250,7 +255,7 @@ MonoBehaviour:
   panSpeed: 1
   rotSpeed: 0.1
   minMoveBuffer: 0.4
-  mm: {fileID: 0}
+  mm: {fileID: 2063743466}
 --- !u!135 &783866303
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -673,6 +678,8 @@ MonoBehaviour:
   hotKeys: 3100000032000000
   team: 0
   selectionIndicator: {fileID: 7796024854380974153, guid: d134834a884004440a93beaef53bf2a3, type: 3}
+  selectionBox: {fileID: 427902416}
+  boxSelectBuffer: 0.5
   mouseState: 0
   selectedObjects: []
 --- !u!4 &2063743467
@@ -725,6 +732,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5497283076871835734, guid: 65e03b32e2a639849a181ec8587426a0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5817419034608110937, guid: 65e03b32e2a639849a181ec8587426a0, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
