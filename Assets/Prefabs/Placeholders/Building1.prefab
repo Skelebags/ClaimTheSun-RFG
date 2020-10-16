@@ -153,7 +153,7 @@ MonoBehaviour:
   unplaceableColor: {r: 0.8117648, g: 0.08627451, b: 0.08627451, a: 0}
   constructionColor: {r: 0.16862746, g: 0.227451, b: 0.6313726, a: 0}
   unitPrefabs:
-  - {fileID: 8348443171501456396, guid: bf37d3002d62d8949a84882b643fd372, type: 3}
+  - {fileID: 3058971833618883249, guid: 963072f10226bff408560264955cda30, type: 3}
   hotKeys: 31000000
   spawnDist: 1
   rallyPoint: {fileID: 3461320903200403846}
