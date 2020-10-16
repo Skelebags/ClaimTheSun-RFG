@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 277332654504470372}
   - component: {fileID: 2581869413418467192}
   m_Layer: 0
-  m_Name: Building1
+  m_Name: Factory
   m_TagString: Building
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
