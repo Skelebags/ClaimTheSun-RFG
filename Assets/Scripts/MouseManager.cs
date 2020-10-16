@@ -49,11 +49,13 @@ public class MouseManager : MonoBehaviour
     private GameController gc;
 
     private LayerMask groundMask;
+    private LayerMask sunMask;
 
     void Start()
     {
         selectedObjects = new List<GameObject>();
         groundMask = LayerMask.GetMask("Ground");
+        sunMask = LayerMask.GetMask("Sunlight");
         keyObjDict = new Dictionary<KeyCode, GameObject>();
         for(int i = 0; i < hotKeys.Length; i++)
         {
@@ -67,15 +69,14 @@ public class MouseManager : MonoBehaviour
     {
         if (selectedObjects != null && selectedObjects.Count != 0)
         {
-            //switch (selectedObjects[0].tag)
-            //{
-            //    case "Building":
-            //        HandleBuildingControls();
-            //        break;
-            //    case "Unit":
-            //        HandleUnitControls();
-            //        break;
-            //}
+            foreach (GameObject gameObject in selectedObjects)
+            {
+                if (gameObject == null)
+                {
+                    selectedObjects.Remove(gameObject);
+                }
+            }
+
             HandleBuildingControls();
             HandleUnitControls();
         }
@@ -96,7 +97,7 @@ public class MouseManager : MonoBehaviour
                         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
                         RaycastHit hitInfo;
-                        if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, ~groundMask))
+                        if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, ~(groundMask | sunMask)))
                         {
                             GameObject hitObject = hitInfo.transform.root.gameObject;
                             Debug.Log(hitObject.name);
@@ -145,19 +146,6 @@ public class MouseManager : MonoBehaviour
 
     private void ClearSelection()
     {
-        //if (selectedObjects != null && selectedObjects.Count != 0)
-        //{
-        //    if (selectedObjects[0].CompareTag("Building"))
-        //    {
-        //        if(selectedObjects[0].GetComponent<SpawnBuildingController>())
-        //        {
-        //            selectedObjects[0].GetComponent<SpawnBuildingController>().RallyPointVisible(false);
-        //        }
-        //    }
-
-        //    selectedObjects[0].GetComponent<BaseController>().ClearUI();
-        //}
-
         foreach (GameObject gameObject in selectedObjects)
         {
             if(gameObject.CompareTag("Building"))
@@ -229,18 +217,28 @@ public class MouseManager : MonoBehaviour
             Vector2 min = selectionBox.anchoredPosition - (selectionBox.sizeDelta / 2);
             Vector2 max = selectionBox.anchoredPosition + (selectionBox.sizeDelta / 2);
 
-            foreach (GameObject unit in GameObject.FindGameObjectsWithTag("Unit"))
+            if(GameObject.FindGameObjectsWithTag("Unit") != null)
             {
-                if (unit.GetComponent<UnitController>().GetTeam() == team)
+                foreach (GameObject unit in GameObject.FindGameObjectsWithTag("Unit"))
                 {
-                    Vector3 screenMin = Camera.main.WorldToScreenPoint(unit.GetComponentInChildren<Collider>().bounds.min);
-                    Vector3 screenMax = Camera.main.WorldToScreenPoint(unit.GetComponentInChildren<Collider>().bounds.max);
-                    if (screenMax.x > min.x && screenMin.x < max.x && screenMax.y > min.y && screenMin.y < max.y)
+                    if (unit != null)
                     {
-                        SelectObject(unit);
+                        if (unit.GetComponent<UnitController>())
+                        {
+                            if (unit.GetComponent<UnitController>().GetTeam() == team)
+                            {
+                                Vector3 screenMin = Camera.main.WorldToScreenPoint(unit.GetComponent<Collider>().bounds.min);
+                                Vector3 screenMax = Camera.main.WorldToScreenPoint(unit.GetComponent<Collider>().bounds.max);
+                                if (screenMax.x > min.x && screenMin.x < max.x && screenMax.y > min.y && screenMin.y < max.y)
+                                {
+                                    SelectObject(unit);
+                                }
+                            }
+                        }
                     }
                 }
             }
+            
         }
     }
 
@@ -277,7 +275,7 @@ public class MouseManager : MonoBehaviour
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
                     RaycastHit hitInfo;
-                    if (Physics.Raycast(ray, out hitInfo))
+                    if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, ~sunMask))
                     {
                         GameObject hitObject = hitInfo.transform.root.gameObject;
                         if (hitObject.CompareTag("Ground"))
@@ -357,7 +355,7 @@ public class MouseManager : MonoBehaviour
 
                 RaycastHit hitInfo;
 
-                if (Physics.Raycast(ray, out hitInfo))
+                if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, ~sunMask))
                 {
                     GameObject hitObject = hitInfo.transform.root.gameObject;
                     foreach(UnitController controller in unitControllers)

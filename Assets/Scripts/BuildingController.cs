@@ -41,7 +41,10 @@ public class BuildingController : BaseController
         baseColors = new Color[meshRenderers.Length];
         for (int i = 0; i < meshRenderers.Length; i++)
         {
-            baseColors[i] = meshRenderers[i].material.color;
+            if (meshRenderers[i].material.HasProperty("_Color"))
+            {
+                baseColors[i] = meshRenderers[i].material.color;
+            }
         }
 
         colliders = GetComponentsInChildren<Collider>();
@@ -50,6 +53,7 @@ public class BuildingController : BaseController
             collider.isTrigger = true;
         }
         GetComponent<NavMeshObstacle>().enabled = false;
+        GetComponent<Rigidbody>().detectCollisions = false;
 
         isIntersecting = false;
         canPlace = true;
@@ -62,7 +66,8 @@ public class BuildingController : BaseController
         switch(state)
         {
             case State.ready:
-                GetComponent<Rigidbody>().isKinematic = true;
+
+                GetComponent<Rigidbody>().detectCollisions = true;
 
                 break;
             case State.building:
@@ -86,7 +91,6 @@ public class BuildingController : BaseController
                     buildTimer += Time.deltaTime;
                     
                 }
-                GetComponent<Rigidbody>().isKinematic = true;
                 break;
 
             case State.placing:
