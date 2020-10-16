@@ -11,6 +11,10 @@ public class UnitController : BaseController
     private float attackDamage = 5f;
 
     [SerializeField]
+    [Tooltip("The amount of damage dealt by this unit")]
+    private float armourPen = 0f;
+
+    [SerializeField]
     [Tooltip("The time in seconds between attacks")]
     private float attackRate = 0.5f;
     private float attackTimer = 0f;
@@ -65,11 +69,11 @@ public class UnitController : BaseController
                             {
                                 if (attackTarget.CompareTag("Building"))
                                 {
-                                    attackTarget.GetComponent<BuildingController>().Damage(attackDamage);
+                                    attackTarget.GetComponent<BuildingController>().Damage(attackDamage, armourPen);
                                 }
                                 else
                                 {
-                                    attackTarget.GetComponent<UnitController>().Damage(attackDamage);
+                                    attackTarget.GetComponent<UnitController>().Damage(attackDamage, armourPen);
                                 }
                                 attackTimer = 0f;
                             }

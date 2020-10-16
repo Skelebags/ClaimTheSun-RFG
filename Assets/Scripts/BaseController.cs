@@ -19,6 +19,14 @@ public class BaseController : MonoBehaviour
     protected float currentHealth { get; set; }
 
     [SerializeField]
+    [Tooltip("The armour value of the unit")]
+    protected float armour = 0f;
+
+    [SerializeField]
+    [Tooltip("How much this unit resists decay")]
+    protected float decayResistance = 0f;
+
+    [SerializeField]
     [Tooltip("Which team this entity is on")] [Range(0, 9)]
     protected int team = 0;
 
@@ -28,11 +36,16 @@ public class BaseController : MonoBehaviour
     protected GameObject uiPanel;
     protected Button[] buttons;
 
+    protected static float MAX_ARMOUR_REDUCTION = 10f;
+
+    private float decaytimer;
+
     private GameObject canvas;
 
     protected virtual void Awake()
     {
         currentHealth = maxHealth;
+        decaytimer = 0f;
     }
 
 
@@ -51,15 +64,38 @@ public class BaseController : MonoBehaviour
         return team;
     }
 
+    public float GetDecayTimer()
+    {
+        return decaytimer;
+    }
+
+    public void SetDecayTimer(float timer)
+    {
+        decaytimer = timer;
+    }
+
     public void SetTeam(int newTeam)
     {
         team = newTeam;
     }
 
-    public void Damage(float damage)
+    public void Damage(float damage, float penetration)
     {
-        currentHealth -= damage;
+        float trueDamage = damage / Mathf.Clamp((armour + 1/ penetration + 1), 1f, MAX_ARMOUR_REDUCTION);
+
+        currentHealth -= trueDamage;
         if (currentHealth <= 0)
+        {
+            Kill();
+        }
+    }
+
+    public void Decay(float decayStrength)
+    {
+        float trueDecay = Mathf.Clamp(decayStrength - decayResistance, 0f, decayStrength);
+
+        currentHealth -= trueDecay;
+        if(currentHealth <= 0)
         {
             Kill();
         }
@@ -103,4 +139,6 @@ public class BaseController : MonoBehaviour
             Destroy(uiPanel);
         }
     }
+
+
 }

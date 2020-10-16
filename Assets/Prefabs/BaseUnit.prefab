@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7937914785129770945}
   - component: {fileID: 1579613154329895443}
   - component: {fileID: 6821958253943198684}
+  - component: {fileID: 2445016689376339256}
   m_Layer: 0
   m_Name: BaseUnit
   m_TagString: Unit
@@ -29,7 +30,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.32, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 2076703928756737252}
   - {fileID: 4550190633309651440}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -49,9 +49,12 @@ MonoBehaviour:
   buildTime: 1
   buildCost: 5
   maxHealth: 10
+  armour: 0
+  decayResistance: 0
   team: 0
   uiPrefab: {fileID: 8244252749326759881, guid: d955b03d270ce084f8b09c18c63a10d5, type: 3}
   attackDamage: 5
+  armourPen: 0
   attackRate: 0.5
   attackRange: 2
   idealRange: 0.948
@@ -78,44 +81,13 @@ NavMeshAgent:
   m_BaseOffset: 0.125
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!1 &4224635547552601913
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2076703928756737252}
-  - component: {fileID: 6172505999969097796}
-  m_Layer: 0
-  m_Name: RigidBody
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2076703928756737252
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4224635547552601913}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 7937914785129770945}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &6172505999969097796
+--- !u!54 &2445016689376339256
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4224635547552601913}
+  m_GameObject: {fileID: 3766759866487044450}
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
@@ -136,7 +108,7 @@ GameObject:
   - component: {fileID: 4550190633309651440}
   m_Layer: 0
   m_Name: Model
-  m_TagString: Untagged
+  m_TagString: Unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -153,5 +125,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7937914785129770945}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

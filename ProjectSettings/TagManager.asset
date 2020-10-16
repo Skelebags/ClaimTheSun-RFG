@@ -9,6 +9,7 @@ TagManager:
   - Building
   - Game_Manager
   - Selection_Indicator
+  - Sunlight
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - 
   - Ground
   - PostProcessing
-  - 
+  - Sunlight
   - 
   - 
   - 
