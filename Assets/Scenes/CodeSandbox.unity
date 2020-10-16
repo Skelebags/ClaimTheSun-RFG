@@ -282,7 +282,7 @@ Transform:
   m_Children:
   - {fileID: 1569656328}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 31.305, y: 0, z: 0}
 --- !u!54 &783866305
 Rigidbody:
@@ -296,10 +296,10 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 3
 --- !u!114 &1016221257 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5817419034370476608, guid: 65e03b32e2a639849a181ec8587426a0, type: 3}
@@ -380,7 +380,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1544562055
 GameObject:
@@ -446,7 +446,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1569656325
 GameObject:
@@ -626,7 +626,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1827174362
 BoxCollider:
@@ -694,7 +694,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2063743468
 MonoBehaviour:
@@ -770,7 +770,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5817419035724489875, guid: 65e03b32e2a639849a181ec8587426a0, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5817419035724489875, guid: 65e03b32e2a639849a181ec8587426a0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -884,6 +884,26 @@ PrefabInstance:
     - target: {fileID: 8618628824958397305, guid: 8243b5a9316773347aaaa41832f1efaa, type: 3}
       propertyPath: m_Name
       value: Sunshaft
+      objectReference: {fileID: 0}
+    - target: {fileID: 8618628824958397305, guid: 8243b5a9316773347aaaa41832f1efaa, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8618628825030573080, guid: 8243b5a9316773347aaaa41832f1efaa, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.00001
+      objectReference: {fileID: 0}
+    - target: {fileID: 8618628825030573081, guid: 8243b5a9316773347aaaa41832f1efaa, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8618628825030573087, guid: 8243b5a9316773347aaaa41832f1efaa, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8618628826035602718, guid: 8243b5a9316773347aaaa41832f1efaa, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8243b5a9316773347aaaa41832f1efaa, type: 3}
