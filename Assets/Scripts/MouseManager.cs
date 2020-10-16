@@ -217,18 +217,28 @@ public class MouseManager : MonoBehaviour
             Vector2 min = selectionBox.anchoredPosition - (selectionBox.sizeDelta / 2);
             Vector2 max = selectionBox.anchoredPosition + (selectionBox.sizeDelta / 2);
 
-            foreach (GameObject unit in GameObject.FindGameObjectsWithTag("Unit"))
+            if(GameObject.FindGameObjectsWithTag("Unit") != null)
             {
-                if (unit.GetComponent<UnitController>().GetTeam() == team)
+                foreach (GameObject unit in GameObject.FindGameObjectsWithTag("Unit"))
                 {
-                    Vector3 screenMin = Camera.main.WorldToScreenPoint(unit.GetComponentInChildren<Collider>().bounds.min);
-                    Vector3 screenMax = Camera.main.WorldToScreenPoint(unit.GetComponentInChildren<Collider>().bounds.max);
-                    if (screenMax.x > min.x && screenMin.x < max.x && screenMax.y > min.y && screenMin.y < max.y)
+                    if (unit != null)
                     {
-                        SelectObject(unit);
+                        if (unit.GetComponent<UnitController>())
+                        {
+                            if (unit.GetComponent<UnitController>().GetTeam() == team)
+                            {
+                                Vector3 screenMin = Camera.main.WorldToScreenPoint(unit.GetComponent<Collider>().bounds.min);
+                                Vector3 screenMax = Camera.main.WorldToScreenPoint(unit.GetComponent<Collider>().bounds.max);
+                                if (screenMax.x > min.x && screenMin.x < max.x && screenMax.y > min.y && screenMin.y < max.y)
+                                {
+                                    SelectObject(unit);
+                                }
+                            }
+                        }
                     }
                 }
             }
+            
         }
     }
 

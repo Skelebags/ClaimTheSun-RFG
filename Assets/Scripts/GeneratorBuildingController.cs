@@ -30,10 +30,23 @@ public class GeneratorBuildingController : BuildingController
         }
     }
 
-    protected override void Update()
+    //protected override void Update()
+    //{
+    //    base.Update();
+    //    if(state == State.ready)
+    //    {
+    //        energyTimer += Time.deltaTime;
+    //        if (energyTimer >= energyRate)
+    //        {
+    //            teamController.AddEnergy(energyGeneration);
+    //            energyTimer = 0f;
+    //        }
+    //    }
+    //}
+
+    private void OnTriggerStay(Collider other)
     {
-        base.Update();
-        if(state == State.ready)
+        if (state == State.ready)
         {
             energyTimer += Time.deltaTime;
             if (energyTimer >= energyRate)
