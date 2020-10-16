@@ -24,8 +24,6 @@ public class CameraController : MonoBehaviour
 
     private LayerMask groundMask;
 
-    private float zoom = 0f;
-
     private void Start()
     {
         groundMask = LayerMask.GetMask("Ground");
