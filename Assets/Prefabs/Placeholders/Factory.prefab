@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15104ce303b53e74aa82c651918587ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: InfantryFactory
+  id: VehicleFactory
   buildTime: 3
   buildCost: 25
   maxHealth: 10
@@ -155,7 +155,7 @@ MonoBehaviour:
   constructionColor: {r: 0.16862746, g: 0.227451, b: 0.6313726, a: 0}
   unitPrefabs:
   - {fileID: 8348443171501456396, guid: bf37d3002d62d8949a84882b643fd372, type: 3}
-  hotKeys: 31000000
+  unitIDs: []
   spawnDist: 1
   rallyPoint: {fileID: 3461320903200403846}
 --- !u!208 &277332654504470372

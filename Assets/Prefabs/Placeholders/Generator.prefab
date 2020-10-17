@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d05d5a460a6fa4c9e41f8f08bb877a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: Generator
   buildTime: 2
   buildCost: 25
   maxHealth: 10
