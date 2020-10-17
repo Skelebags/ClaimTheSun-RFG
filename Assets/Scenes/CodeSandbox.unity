@@ -296,7 +296,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 3
@@ -623,7 +623,7 @@ Transform:
   m_GameObject: {fileID: 1827174357}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -675,7 +675,13 @@ MonoBehaviour:
   placeableObjectPrefabs:
   - {fileID: 2087532202728917908, guid: f0ae2a94f6d35c144a0dc7c5002d1637, type: 3}
   - {fileID: 1157344586522797670, guid: e71d7355449a2064d866cd6e6a977019, type: 3}
-  hotKeys: 3100000032000000
+  - {fileID: 1051500094488182638, guid: c6e486059e1f8c749970e5673799974e, type: 3}
+  - {fileID: 1051500094488182638, guid: b3fa8b5bfc11d064588b8a6fd85917f2, type: 3}
+  - {fileID: 1051500094488182638, guid: 4b0c58395cc61d7439aba44dbf486127, type: 3}
+  - {fileID: 1051500094488182638, guid: 040fec69806e0a0449e3d31b806f8a8d, type: 3}
+  - {fileID: 1051500094488182638, guid: 2c0c399cdf042c74c8a9ee85ec1c69d6, type: 3}
+  - {fileID: 1051500094488182638, guid: 51a6cafb14fa25349ac23f275ba5a6c2, type: 3}
+  hotKeys: 3100000032000000330000003400000035000000360000003700000038000000
   team: 0
   selectionIndicator: {fileID: 7796024854380974153, guid: d134834a884004440a93beaef53bf2a3, type: 3}
   selectionBox: {fileID: 427902416}
@@ -837,6 +843,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3794833146463251028, guid: 8243b5a9316773347aaaa41832f1efaa, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3794833146463251034, guid: 8243b5a9316773347aaaa41832f1efaa, type: 3}
+      propertyPath: m_Radius
+      value: 1.75
+      objectReference: {fileID: 0}
     - target: {fileID: 8618628824958397300, guid: 8243b5a9316773347aaaa41832f1efaa, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

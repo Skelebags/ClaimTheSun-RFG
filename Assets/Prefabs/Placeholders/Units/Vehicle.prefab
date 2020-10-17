@@ -50,9 +50,12 @@ MonoBehaviour:
   buildTime: 1
   buildCost: 5
   maxHealth: 10
+  armour: 0
+  decayResistance: 0
   team: 0
   uiPrefab: {fileID: 8244252749326759881, guid: d955b03d270ce084f8b09c18c63a10d5, type: 3}
   attackDamage: 5
+  armourPen: 0
   attackRate: 0.5
   attackRange: 2
   idealRange: 0.948
@@ -174,7 +177,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 2134e68f8b0ef53468015d8c0c5c336b, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 58be1cf48876cb44faefa01fce93499d, type: 2}
+      objectReference: {fileID: 2100000, guid: c2966186606049b49999c983b042e13a, type: 2}
     - target: {fileID: 919132149155446097, guid: 2134e68f8b0ef53468015d8c0c5c336b, type: 3}
       propertyPath: m_Name
       value: Tank_Mesh
