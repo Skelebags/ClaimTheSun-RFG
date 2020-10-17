@@ -6,6 +6,10 @@ using UnityEngine.UI;
 public class BaseController : MonoBehaviour
 {
     [SerializeField]
+    [Tooltip("This Objects ID")]
+    private string id;
+
+    [SerializeField]
     [Tooltip("Time taken in seconds to build this unit")]
     protected float buildTime = 5f;
 
@@ -38,6 +42,8 @@ public class BaseController : MonoBehaviour
 
     protected static float MAX_ARMOUR_REDUCTION = 10f;
 
+    protected bool canDecay;
+
     private float decaytimer;
 
     private GameObject canvas;
@@ -45,9 +51,14 @@ public class BaseController : MonoBehaviour
     protected virtual void Awake()
     {
         currentHealth = maxHealth;
+        canDecay = true;
         decaytimer = 0f;
     }
 
+    public string GetID()
+    {
+        return id;
+    }
 
     public float GetBuildTime()
     {
@@ -92,12 +103,15 @@ public class BaseController : MonoBehaviour
 
     public void Decay(float decayStrength)
     {
-        float trueDecay = Mathf.Clamp(decayStrength - decayResistance, 0f, decayStrength);
-
-        currentHealth -= trueDecay;
-        if(currentHealth <= 0)
+        if(canDecay)
         {
-            Kill();
+            float trueDecay = Mathf.Clamp(decayStrength - decayResistance, 0f, decayStrength);
+
+            currentHealth -= trueDecay;
+            if (currentHealth <= 0)
+            {
+                Kill();
+            }
         }
     }
 

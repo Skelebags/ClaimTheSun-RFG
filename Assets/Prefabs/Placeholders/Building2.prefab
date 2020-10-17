@@ -46,13 +46,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d05d5a460a6fa4c9e41f8f08bb877a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: Generator
   buildTime: 2
   buildCost: 25
   maxHealth: 10
   armour: 0
-  decayResistance: 0
+  decayResistance: 1
   team: 0
-  uiPrefab: {fileID: 8708991235873039805, guid: b34587fa427c14a41934d432919490b4, type: 3}
+  uiPrefab: {fileID: 8244252749326759881, guid: d955b03d270ce084f8b09c18c63a10d5, type: 3}
   placeableColor: {r: 0.227451, g: 0.65882355, b: 0.30980393, a: 0}
   unplaceableColor: {r: 1, g: 0, b: 0, a: 0}
   constructionColor: {r: 0.21176472, g: 0.3254902, b: 0.79215693, a: 0}

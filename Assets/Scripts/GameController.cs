@@ -7,6 +7,8 @@ public class GameController : MonoBehaviour
     [SerializeField]
     [Tooltip("The base maximum energy for the player")]
     private float maxEnergy = 100f;
+
+    [SerializeField]
     private float currentEnergy;
 
     [SerializeField]
