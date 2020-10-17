@@ -237,7 +237,7 @@ MonoBehaviour:
   unitPrefabs:
   - {fileID: 4812063653225997697, guid: 3af316d06f1085d4b913dcf2fbf6b4bc, type: 3}
   unitIDs: []
-  spawnDist: 1
+  spawnDist: 1.5
   rallyPoint: {fileID: 7164270559179235093}
 --- !u!208 &5817744223404083703
 NavMeshObstacle:

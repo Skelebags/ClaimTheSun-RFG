@@ -86,6 +86,8 @@ public class SpawnBuildingController : BuildingController
         newUnit.transform.position = spawnPos;
         newUnit.GetComponent<UnitController>().SetTeam(team);
         newUnit.GetComponent<UnitController>().MoveOrder(rallyPoint.transform.position);
+
+        newUnit.GetComponent<UnitController>().MoveOrder(rallyPoint.transform.position);
     }
 
     public List<string> GetUnitIDs()
