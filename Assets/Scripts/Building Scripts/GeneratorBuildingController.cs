@@ -19,9 +19,8 @@ public class GeneratorBuildingController : BuildingController
     protected override void Awake()
     {
         base.Awake();
-        GameObject[] managers = GameObject.FindGameObjectsWithTag("Game_Manager");
 
-        foreach(GameObject manager in managers)
+        foreach(GameObject manager in GameObject.FindGameObjectsWithTag("Game_Manager"))
         {
             if (manager.GetComponent<MouseManager>().GetTeam() == team)
             {
@@ -30,19 +29,20 @@ public class GeneratorBuildingController : BuildingController
         }
     }
 
-    //protected override void Update()
-    //{
-    //    base.Update();
-    //    if(state == State.ready)
-    //    {
-    //        energyTimer += Time.deltaTime;
-    //        if (energyTimer >= energyRate)
-    //        {
-    //            teamController.AddEnergy(energyGeneration);
-    //            energyTimer = 0f;
-    //        }
-    //    }
-    //}
+    protected override void Update()
+    {
+        base.Update();
+        if (state == State.building)
+        {
+            foreach (GameObject manager in GameObject.FindGameObjectsWithTag("Game_Manager"))
+            {
+                if (manager.GetComponent<MouseManager>().GetTeam() == team)
+                {
+                    teamController = manager.GetComponent<GameController>();
+                }
+            }
+        }
+    }
 
     private void OnTriggerStay(Collider other)
     {

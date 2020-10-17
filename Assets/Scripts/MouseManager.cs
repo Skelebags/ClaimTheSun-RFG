@@ -9,11 +9,13 @@ public class MouseManager : MonoBehaviour
 {
     [SerializeField]
     [Tooltip("The Building prefab that this instance will spawn")]
-    private GameObject[] placeableObjectPrefabs;
+    protected GameObject[] placeableObjectPrefabs;
 
     [SerializeField]
     [Tooltip("The Hotkey to place this building")]
-    private KeyCode[] hotKeys = { KeyCode.Alpha1 };
+    //private KeyCode[] hotKeys = { KeyCode.Alpha1 };
+    //private string[] buildingIDs;
+    private List<string> buildingIDs;
 
     [SerializeField]
     [Tooltip("Which team this entity is on")]
@@ -37,8 +39,8 @@ public class MouseManager : MonoBehaviour
     public MouseState mouseState;
 
     public List<GameObject> selectedObjects;
-
-    private Dictionary<KeyCode, GameObject> keyObjDict;
+    
+    protected Dictionary<string, GameObject> buildingDict;
 
     private GameObject currentPlaceableObject;
 
@@ -46,20 +48,24 @@ public class MouseManager : MonoBehaviour
 
     private bool canPlace;
 
-    private GameController gc;
+    protected GameController gc;
 
     private LayerMask groundMask;
     private LayerMask sunMask;
 
-    void Start()
+    protected virtual void Start()
     {
+        buildingIDs = new List<string>();
         selectedObjects = new List<GameObject>();
         groundMask = LayerMask.GetMask("Ground");
         sunMask = LayerMask.GetMask("Sunlight");
-        keyObjDict = new Dictionary<KeyCode, GameObject>();
-        for(int i = 0; i < hotKeys.Length; i++)
+        buildingDict = new Dictionary<string, GameObject>();
+ 
+
+        foreach(GameObject building in placeableObjectPrefabs)
         {
-            keyObjDict.Add(hotKeys[i], placeableObjectPrefabs[i]);
+            buildingIDs.Add(building.GetComponent<BaseController>().GetID());
+            buildingDict.Add(building.GetComponent<BaseController>().GetID(), building);
         }
         gc = GetComponent<GameController>();
     }
@@ -82,7 +88,7 @@ public class MouseManager : MonoBehaviour
         }
         else
         {
-            HandleNewObjectHotkey();
+            //HandleNewObjectHotkey();
         }
 
         switch(mouseState)
@@ -175,21 +181,33 @@ public class MouseManager : MonoBehaviour
             indicator.GetComponent<SelectionIndicator>().Attach(obj);
             if(selectedObjects.Count == 1)
             {
+
+                selectedObjects[0].GetComponent<BaseController>().GenerateUI();
+
                 if (selectedObjects[0].CompareTag("Building"))
                 {
                     if (selectedObjects[0].GetComponent<SpawnBuildingController>())
                     {
                         selectedObjects[0].GetComponent<SpawnBuildingController>().RallyPointVisible(true);
+                        for (int i = 0; i < selectedObjects[0].GetComponent<SpawnBuildingController>().GetButtons().Length; i++)
+                        {
+                            int index = i;
+                            selectedObjects[0].GetComponent<SpawnBuildingController>().GetButtons()[i].onClick.AddListener(() => BuildingButtonControl(index));
+                            selectedObjects[0].GetComponent<SpawnBuildingController>().GetButtons()[i].GetComponentInChildren<Text>().text = selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitIDs()[index];
+                        }
+                    }
+                    if(selectedObjects[0].GetComponent<HQBuildingController>())
+                    {
+                        for (int i = 0; i < selectedObjects[0].GetComponent<HQBuildingController>().GetButtons().Length; i++)
+                        {
+                            int index = i;
+                            selectedObjects[0].GetComponent<HQBuildingController>().GetButtons()[i].onClick.AddListener(() => PlaceBuilding(buildingIDs[index]));
+                            selectedObjects[0].GetComponent<HQBuildingController>().GetButtons()[i].GetComponentInChildren<Text>().text = buildingIDs[index];
+                        }
                     }
                 }
 
-                selectedObjects[0].GetComponent<BaseController>().GenerateUI();
 
-                for (int i = 0; i < selectedObjects[0].GetComponent<BaseController>().GetButtons().Length; i++)
-                {
-                    int index = i;
-                    selectedObjects[0].GetComponent<BaseController>().GetButtons()[i].onClick.AddListener(() => BuildingButtonControl(index));
-                }
             }
         }
     }
@@ -242,24 +260,39 @@ public class MouseManager : MonoBehaviour
         }
     }
 
-    private void HandleNewObjectHotkey()
+    //private void HandleNewObjectHotkey()
+    //{
+        //foreach (KeyCode hotKey in hotKeys)
+        //{
+        //    if (Input.GetKeyDown(hotKey))
+        //    {
+        //        if (currentPlaceableObject != null)
+        //        {
+        //            Destroy(currentPlaceableObject);
+        //            mouseState = MouseState.idle;
+        //        }
+        //        else
+        //        {
+        //            currentPlaceableObject = Instantiate(keyObjDict[hotKey]);
+        //            currentPlaceableObject.GetComponent<BaseController>().SetTeam(team);
+        //            mouseState = MouseState.placing;
+        //        }
+        //    }
+        //}
+    //}
+
+    private void PlaceBuilding(string id)
     {
-        foreach (KeyCode hotKey in hotKeys)
+        if (currentPlaceableObject != null)
         {
-            if (Input.GetKeyDown(hotKey))
-            {
-                if (currentPlaceableObject != null)
-                {
-                    Destroy(currentPlaceableObject);
-                    mouseState = MouseState.idle;
-                }
-                else
-                {
-                    currentPlaceableObject = Instantiate(keyObjDict[hotKey]);
-                    currentPlaceableObject.GetComponent<BaseController>().SetTeam(team);
-                    mouseState = MouseState.placing;
-                }
-            }
+            Destroy(currentPlaceableObject);
+            mouseState = MouseState.idle;
+        }
+        else
+        {
+            currentPlaceableObject = Instantiate(buildingDict[id]);
+            currentPlaceableObject.GetComponent<BaseController>().SetTeam(team);
+            mouseState = MouseState.placing;
         }
     }
 
@@ -284,22 +317,6 @@ public class MouseManager : MonoBehaviour
                         }
                     }
                 }
-
-                foreach (KeyCode hotKey in selectedObjects[0].GetComponent<SpawnBuildingController>().GetHotKeys())
-                {
-                    if (Input.GetKeyDown(hotKey))
-                    {
-                        if (gc.CanAfford(selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitCost(hotKey)))
-                        {
-                            gc.SpendEnergy(selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitCost(hotKey));
-                            selectedObjects[0].GetComponent<SpawnBuildingController>().AddToQueue(hotKey);
-                        }
-                        else
-                        {
-                            Debug.Log("Not Enough Energy");
-                        }
-                    }
-                }
             }
         } else 
         if(selectedObjects.Count > 1)
@@ -318,11 +335,11 @@ public class MouseManager : MonoBehaviour
     {
         if (selectedObjects[0].GetComponent<SpawnBuildingController>())
         {
-            KeyCode hotKey = selectedObjects[0].GetComponent<SpawnBuildingController>().GetHotKeys()[index];
-            if (gc.CanAfford(selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitCost(hotKey)))
+            string id = selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitIDs()[index];
+            if (gc.CanAfford(selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitCost(id)))
             {
-                gc.SpendEnergy(selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitCost(hotKey));
-                selectedObjects[0].GetComponent<SpawnBuildingController>().AddToQueue(hotKey);
+                gc.SpendEnergy(selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitCost(id));
+                selectedObjects[0].GetComponent<SpawnBuildingController>().AddToQueue(id);
             }
             else
             {
@@ -403,6 +420,12 @@ public class MouseManager : MonoBehaviour
             canPlace = false;
         }
         currentPlaceableObject.GetComponent<BuildingController>().SetPlaceable(canPlace);
+
+        if (Input.GetKeyDown(KeyCode.Escape) && currentPlaceableObject != null)
+        {
+            Destroy(currentPlaceableObject);
+            mouseState = MouseState.idle;
+        }
     }
 
     private void RotateFromMouseWheel()

@@ -9,8 +9,8 @@ public class SpawnBuildingController : BuildingController
     private GameObject[] unitPrefabs;
 
     [SerializeField]
-    [Tooltip("The Hotkey to place build each unit")]
-    private KeyCode[] hotKeys = { KeyCode.Alpha1 };
+    [Tooltip("The IDs for each unit")]
+    private List<string> unitIDs;
 
     [SerializeField]
     [Tooltip("The Maximum size of the build queue")]
@@ -23,8 +23,8 @@ public class SpawnBuildingController : BuildingController
     [SerializeField]
     [Tooltip("This building's rallypoint")]
     private GameObject rallyPoint;
-
-    private Dictionary<KeyCode, GameObject> keyObjDict;
+    
+    private Dictionary<string, GameObject> unitDict;
 
     private List<GameObject> buildQueue;
     
@@ -35,10 +35,13 @@ public class SpawnBuildingController : BuildingController
         base.Awake();
         buildQueue = new List<GameObject>();
         unitTimer = 0f;
-        keyObjDict = new Dictionary<KeyCode, GameObject>();
-        for (int i = 0; i < hotKeys.Length; i++)
+        unitDict = new Dictionary<string, GameObject>();
+        unitIDs = new List<string>();
+
+        foreach(GameObject unit in unitPrefabs)
         {
-            keyObjDict.Add(hotKeys[i], unitPrefabs[i]);
+            unitIDs.Add(unit.GetComponent<BaseController>().GetID());
+            unitDict.Add(unit.GetComponent<BaseController>().GetID(), unit);
         }
     }
 
@@ -67,11 +70,11 @@ public class SpawnBuildingController : BuildingController
 
     }
 
-    public void AddToQueue(KeyCode key)
+    public void AddToQueue(string id)
     {
-        if (buildQueue.Count < QUEUE_MAX)
+        if(buildQueue.Count < QUEUE_MAX)
         {
-            buildQueue.Add(keyObjDict[key]);
+            buildQueue.Add(unitDict[id]);
         }
     }
 
@@ -85,14 +88,14 @@ public class SpawnBuildingController : BuildingController
         newUnit.GetComponent<UnitController>().MoveOrder(rallyPoint.transform.position);
     }
 
-    public KeyCode[] GetHotKeys()
+    public List<string> GetUnitIDs()
     {
-        return hotKeys;
+        return unitIDs;
     }
 
-    public float GetUnitCost(KeyCode key)
+    public float GetUnitCost(string id)
     {
-        return keyObjDict[key].GetComponent<UnitController>().GetBuildCost();
+        return unitDict[id].GetComponent<UnitController>().GetBuildCost();
     }
 
     public void RallyPointVisible(bool state)
@@ -109,5 +112,10 @@ public class SpawnBuildingController : BuildingController
         {
             rallyPoint.transform.position = position;
         }
+    }
+
+    public int GetQueueSize()
+    {
+        return buildQueue.Count;
     }
 }

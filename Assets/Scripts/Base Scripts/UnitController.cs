@@ -35,8 +35,8 @@ public class UnitController : BaseController
 
     private GameObject attackTarget;
 
-    private enum State { idle, attacking}
-    private State state;
+    public enum State { idle, attacking}
+    public State state;
     
     new protected virtual void Awake()
     {
@@ -46,7 +46,7 @@ public class UnitController : BaseController
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         switch(state)
         {
@@ -60,21 +60,16 @@ public class UnitController : BaseController
                 }
                 else
                 {
-                    if((attackTarget.transform.position - transform.position).magnitude <= attackRange)
+
+                    Debug.Log("Attack");
+                    if ((attackTarget.transform.position - transform.position).magnitude <= attackRange)
                     {
                         if((agent.desiredVelocity == Vector3.zero) || attackMove)
                         {
                             attackTimer += Time.deltaTime;
                             if (attackTimer >= attackRate)
                             {
-                                if (attackTarget.CompareTag("Building"))
-                                {
-                                    attackTarget.GetComponent<BuildingController>().Damage(attackDamage, armourPen);
-                                }
-                                else
-                                {
-                                    attackTarget.GetComponent<UnitController>().Damage(attackDamage, armourPen);
-                                }
+                                attackTarget.GetComponent<BaseController>().Damage(attackDamage, armourPen);
                                 attackTimer = 0f;
                             }
                         }
@@ -82,17 +77,36 @@ public class UnitController : BaseController
                     else
                     {
                         agent.SetDestination(attackTarget.transform.position - (attackTarget.transform.position - transform.position).normalized * (attackRange * idealRange));
-                        attackTimer = 0f;
+                        //NavMeshPath path = new NavMeshPath();
+                        //agent.CalculatePath(attackTarget.transform.position, path);
+                        //agent.path = path;
+                        //path = null;
+                        attackTimer = 0f; 
                     }
                 }
                 break;
+        }
+
+        if(!agent.pathPending)
+        {
+            if(agent.remainingDistance <= agent.stoppingDistance)
+            {
+                if(agent.hasPath)
+                {
+                    agent.ResetPath();
+                }
+            }
         }
     }
 
     public void MoveOrder(Vector3 targetPosition)
     {
         state = State.idle;
-        agent.SetDestination(targetPosition);
+        //agent.SetDestination(targetPosition);
+        NavMeshPath path = new NavMeshPath();
+        agent.CalculatePath(targetPosition, path);
+        agent.path = path;
+        path = null;
         attackTarget = null;
     }
 
