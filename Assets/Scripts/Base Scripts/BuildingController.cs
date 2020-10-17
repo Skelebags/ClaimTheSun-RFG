@@ -53,7 +53,6 @@ public class BuildingController : BaseController
             collider.isTrigger = true;
         }
         GetComponent<NavMeshObstacle>().enabled = false;
-        GetComponent<Rigidbody>().detectCollisions = false;
 
         isIntersecting = false;
         canPlace = true;
@@ -67,8 +66,6 @@ public class BuildingController : BaseController
         {
             case State.ready:
 
-                GetComponent<Rigidbody>().detectCollisions = true;
-
                 break;
             case State.building:
                 if (buildTimer >= buildTime)
@@ -77,6 +74,7 @@ public class BuildingController : BaseController
                     {
                         meshRenderers[i].material.color = baseColors[i];
                     }
+                    transform.position = new Vector3(transform.position.x, GetComponentInChildren<Collider>().bounds.extents.y, transform.position.z);
                     state = State.ready;
                     buildTimer = 0;
                     
@@ -137,6 +135,14 @@ public class BuildingController : BaseController
     private void OnTriggerEnter(Collider collision)
     {
         if(collision.CompareTag("Building"))
+        {
+            isIntersecting = true;
+        }
+    }
+
+    private void OnTriggerStay(Collider collision)
+    {
+        if (collision.CompareTag("Building"))
         {
             isIntersecting = true;
         }

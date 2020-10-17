@@ -21,11 +21,8 @@ public class SelectionIndicator : MonoBehaviour
 
     void Update()
     {
-        //if(mm.selectedObject != null)
         if(attachedObject != null)
         {
-
-            //Bounds bigBounds = mm.selectedObject.GetComponentInChildren<Renderer>().bounds;
             Bounds bigBounds =attachedObject.GetComponentInChildren<Renderer>().bounds;
 
             transform.position = new Vector3(bigBounds.center.x, 0, bigBounds.center.z);

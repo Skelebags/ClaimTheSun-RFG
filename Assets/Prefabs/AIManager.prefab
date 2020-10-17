@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7741719581534365526
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7741719581534365528}
+  - component: {fileID: 7741719581534365529}
+  - component: {fileID: 7741719581534365531}
+  m_Layer: 0
+  m_Name: AIManager
+  m_TagString: Game_Manager
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7741719581534365528
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7741719581534365526}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7741719581534365529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7741719581534365526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99d6b84fe7cb1374a9864d910e3e5271, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeableObjectPrefabs:
+  - {fileID: 1157344586522797670, guid: e71d7355449a2064d866cd6e6a977019, type: 3}
+  - {fileID: 2087532202728917908, guid: f0ae2a94f6d35c144a0dc7c5002d1637, type: 3}
+  - {fileID: 7210714553256359607, guid: d6f5676f9a9b8a4459002e3fe2bdfef7, type: 3}
+  - {fileID: 5736997008927270151, guid: 3302ba5ba20b62841bd2e6ea56279467, type: 3}
+  buildingIDs:
+  - Generator
+  - InfantryFactory
+  - VehicleFactory
+  - AirFactory
+  team: 1
+  selectionIndicator: {fileID: 0}
+  selectionBox: {fileID: 0}
+  boxSelectBuffer: 0.5
+  mouseState: 0
+  selectedObjects: []
+  state: 0
+  hqBuilding: {fileID: 0}
+  maxBuildZone: {fileID: 0}
+  minBuildZone: {fileID: 0}
+  desiredGenerators: 4
+  desiredFactories: 1
+  desiredUnits: 2
+--- !u!114 &7741719581534365531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7741719581534365526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95f50668bb99c044aa35a8385e184fb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxEnergy: 100
+  currentEnergy: 0
+  baseEnergyGain: 1
+  energyGainRate: 1
