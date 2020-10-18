@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GeneratorBuildingController : BuildingController
 {
@@ -54,6 +55,14 @@ public class GeneratorBuildingController : BuildingController
                 teamController.AddEnergy(energyGeneration);
                 energyTimer = 0f;
             }
+        }
+    }
+
+    public void UpdateUI()
+    {
+        if (uiPanel)
+        {
+            uiPanel.transform.Find("CURRENT_HEALTH").GetComponent<Text>().text = currentHealth.ToString("#.#") + " / " + maxHealth.ToString();
         }
     }
 }

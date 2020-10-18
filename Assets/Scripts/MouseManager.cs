@@ -318,6 +318,10 @@ public class MouseManager : MonoBehaviour
                     }
                 }
             }
+            if(selectedObjects[0].GetComponent<GeneratorBuildingController>())
+            {
+                selectedObjects[0].GetComponent<GeneratorBuildingController>().UpdateUI();
+            }
         } else 
         if(selectedObjects.Count > 1)
         {
