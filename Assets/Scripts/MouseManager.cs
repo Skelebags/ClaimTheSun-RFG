@@ -113,7 +113,7 @@ public class MouseManager : MonoBehaviour
                                 ClearSelection();
                             }
 
-                            if (hitObject.GetComponent<BaseController>().GetTeam() == team)
+                            if (hitObject.GetComponent<BaseController>() && hitObject.GetComponent<BaseController>().GetTeam() == team)
                             {
                                 SelectObject(hitObject);
 

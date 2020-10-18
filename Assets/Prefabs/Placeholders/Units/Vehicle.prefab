@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c802fbfd90a8be45bd9c810617728a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: Vehicle
   buildTime: 1
   buildCost: 5
   maxHealth: 10
@@ -60,6 +61,7 @@ MonoBehaviour:
   attackRange: 2
   idealRange: 0.948
   attackMove: 0
+  state: 0
 --- !u!195 &1815493886590408370
 NavMeshAgent:
   m_ObjectHideFlags: 0

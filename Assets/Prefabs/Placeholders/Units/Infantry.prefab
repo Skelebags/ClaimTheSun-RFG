@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c802fbfd90a8be45bd9c810617728a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: Infantry
   buildTime: 5
   buildCost: 5
   maxHealth: 10
@@ -60,6 +61,7 @@ MonoBehaviour:
   attackRange: 2
   idealRange: 0.95
   attackMove: 0
+  state: 0
 --- !u!195 &-7190242270126704729
 NavMeshAgent:
   m_ObjectHideFlags: 0

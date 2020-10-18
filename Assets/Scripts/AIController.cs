@@ -359,10 +359,10 @@ public class AIController : MouseManager
             0f,
             Random.Range(collider.bounds.min.y, collider.bounds.max.y));
 
-        if(point != collider.ClosestPoint(point))
-        {
-            point = GetRandomPointInBounds(collider);
-        }
+        //if(point != collider.ClosestPoint(point))
+        //{
+        //    point = GetRandomPointInBounds(collider);
+        //}
 
         return point;
     }
