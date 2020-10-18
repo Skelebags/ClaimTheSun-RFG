@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
@@ -20,6 +21,21 @@ public class GameController : MonoBehaviour
     private float energyGainRate = 1f;
     private float energyTimer;
 
+    [SerializeField]
+    [Tooltip("The player HQ building")]
+    private GameObject playerHQ;
+
+    [SerializeField]
+    [Tooltip("The enemy HQ building")]
+    private GameObject enemyHQ;
+
+    [SerializeField]
+    [Tooltip("The victory UI panel")]
+    private GameObject winPanel;
+
+    [SerializeField]
+    [Tooltip("The defeat UI panel")]
+    private GameObject losePanel;
 
     void Start()
     {
@@ -42,6 +58,15 @@ public class GameController : MonoBehaviour
         else
         {
             energyTimer += Time.deltaTime;
+        }
+
+        if(enemyHQ == null && playerHQ != null)
+        {
+            winPanel.SetActive(true);
+        }
+        if (enemyHQ != null && playerHQ == null)
+        {
+            losePanel.SetActive(true);
         }
     }
 

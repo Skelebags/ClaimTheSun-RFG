@@ -44,7 +44,13 @@ public class BaseController : MonoBehaviour
 
     protected bool canDecay;
 
+    private float colorResetTimer;
     private float decaytimer;
+
+    protected MeshRenderer[] meshRenderers;
+    protected Color[] baseColors;
+
+
 
     private GameObject canvas;
 
@@ -53,6 +59,47 @@ public class BaseController : MonoBehaviour
         currentHealth = maxHealth;
         canDecay = true;
         decaytimer = 0f;
+
+        meshRenderers = GetComponentsInChildren<MeshRenderer>();
+        baseColors = new Color[meshRenderers.Length];
+        for (int i = 0; i < meshRenderers.Length; i++)
+        {
+            if (meshRenderers[i].material.HasProperty("_Color"))
+            {
+                if(team == 0)
+                {
+                    baseColors[i] = new Color(0f, 0f, 0.5f);
+                }
+                else if(team == 1)
+                {
+                    baseColors[i] = new Color(1f, 0f, 0f);
+                }
+                else
+                {
+                    baseColors[i] = meshRenderers[i].material.color;
+                }
+                meshRenderers[i].material.color = baseColors[i];
+            }
+        }
+    }
+
+    public virtual void Update()
+    {
+        if (colorResetTimer >= 0.5f)
+        {
+            for (int i = 0; i < meshRenderers.Length; i++)
+            {
+                if (meshRenderers[i] != null && meshRenderers[i].material.HasProperty("_Color"))
+                {
+                    meshRenderers[i].material.color = baseColors[i];
+                }
+            }
+            colorResetTimer = 0;
+        }
+        else
+        {
+            colorResetTimer += Time.deltaTime;
+        }
     }
 
     public string GetID()
@@ -92,6 +139,14 @@ public class BaseController : MonoBehaviour
 
     public void Damage(float damage, float penetration)
     {
+        for (int i = 0; i < meshRenderers.Length; i++)
+        {
+            if (meshRenderers[i].material.HasProperty("_Color"))
+            {
+                meshRenderers[i].material.color = new Color(1f, 0.5f, 0.5f);
+            }
+        }
+
         float trueDamage = damage / Mathf.Clamp((armour + 1/ penetration + 1), 1f, MAX_ARMOUR_REDUCTION);
 
         currentHealth -= trueDamage;
