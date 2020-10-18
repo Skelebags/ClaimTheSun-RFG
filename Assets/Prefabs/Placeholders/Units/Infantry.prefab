@@ -48,9 +48,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: InfantryUnit
-  buildTime: 5
+  buildTime: 3
   buildCost: 5
-  maxHealth: 10
+  maxHealth: 5
   armour: 0
   decayResistance: 0
   team: 0
@@ -58,9 +58,9 @@ MonoBehaviour:
   attackDamage: 5
   armourPen: 0
   attackRate: 0.5
-  attackRange: 2
+  attackRange: 3
   idealRange: 0.95
-  attackMove: 0
+  attackMove: 1
   state: 0
 --- !u!195 &-7190242270126704729
 NavMeshAgent:
@@ -72,11 +72,11 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: -334000983
   m_Radius: 0.13
-  m_Speed: 2
+  m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 0.5
   m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
   m_AutoRepath: 1

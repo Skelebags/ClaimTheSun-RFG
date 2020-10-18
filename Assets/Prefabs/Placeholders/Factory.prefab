@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: VehicleFactory
-  buildTime: 3
+  buildTime: 30
   buildCost: 25
   maxHealth: 10
   armour: 0
@@ -157,6 +157,7 @@ MonoBehaviour:
   - {fileID: 8348443171501456396, guid: bf37d3002d62d8949a84882b643fd372, type: 3}
   unitIDs: []
   spawnDist: 1
+  spawnHeight: 0
   rallyPoint: {fileID: 3461320903200403846}
 --- !u!208 &277332654504470372
 NavMeshObstacle:

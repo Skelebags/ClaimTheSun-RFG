@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1051500094488182638}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_Children:
   - {fileID: 268419483496092909}
   - {fileID: 4016676781314335478}
@@ -81,8 +81,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: InfantryFactory
-  buildTime: 5
-  buildCost: 5
+  buildTime: 10
+  buildCost: 15
   maxHealth: 10
   armour: 0
   decayResistance: 0
