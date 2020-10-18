@@ -44,6 +44,7 @@ public class BaseController : MonoBehaviour
 
     protected bool canDecay;
 
+    private float colorResetTimer;
     private float decaytimer;
 
     protected MeshRenderer[] meshRenderers;
@@ -77,18 +78,27 @@ public class BaseController : MonoBehaviour
                 {
                     baseColors[i] = meshRenderers[i].material.color;
                 }
+                meshRenderers[i].material.color = baseColors[i];
             }
         }
     }
 
     public virtual void Update()
     {
-        for (int i = 0; i < meshRenderers.Length; i++)
+        if (colorResetTimer >= 0.5f)
         {
-            if (meshRenderers[i].material.HasProperty("_Color"))
+            for (int i = 0; i < meshRenderers.Length; i++)
             {
-                meshRenderers[i].material.color = baseColors[i];
+                if (meshRenderers[i].material.HasProperty("_Color"))
+                {
+                    meshRenderers[i].material.color = baseColors[i];
+                }
             }
+            colorResetTimer = 0;
+        }
+        else
+        {
+            colorResetTimer += Time.deltaTime;
         }
     }
 
@@ -129,6 +139,14 @@ public class BaseController : MonoBehaviour
 
     public void Damage(float damage, float penetration)
     {
+        for (int i = 0; i < meshRenderers.Length; i++)
+        {
+            if (meshRenderers[i].material.HasProperty("_Color"))
+            {
+                meshRenderers[i].material.color = new Color(1f, 0.5f, 0.5f);
+            }
+        }
+
         float trueDamage = damage / Mathf.Clamp((armour + 1/ penetration + 1), 1f, MAX_ARMOUR_REDUCTION);
 
         currentHealth -= trueDamage;
