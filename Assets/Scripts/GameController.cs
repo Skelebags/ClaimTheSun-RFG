@@ -45,11 +45,13 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
+        // Don't allow current energy to go above maximum
         if(currentEnergy > maxEnergy)
         {
             currentEnergy = maxEnergy;
         }
 
+        // Energy gain timer ticks up and adds energy at a defined rate
         if(energyTimer >= energyGainRate && currentEnergy < maxEnergy)
         {
             currentEnergy += baseEnergyGain;
@@ -60,6 +62,7 @@ public class GameController : MonoBehaviour
             energyTimer += Time.deltaTime;
         }
 
+        // Check for win/loss conditions
         if(enemyHQ == null && playerHQ != null)
         {
             winPanel.SetActive(true);

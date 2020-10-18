@@ -94,15 +94,20 @@ public class MouseManager : MonoBehaviour
         switch(mouseState)
         {
             case MouseState.idle:
+                // On left-click
                 if (Input.GetMouseButtonDown(0))
                 {
+                    // Start selection box process
                     boxStartPos = Input.mousePosition;
+
+                    // Check if the mouse is over a UI element
                     if (!IsPointerOverUIElement())
                     {
 
                         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
                         RaycastHit hitInfo;
+                        // Select any friendly non-ground entity
                         if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, ~(groundMask | sunMask)))
                         {
                             GameObject hitObject = hitInfo.transform.root.gameObject;
@@ -119,12 +124,14 @@ public class MouseManager : MonoBehaviour
 
                             }
                         }
+                        // On clicking empty space, clear selection
                         else
                         {
                             ClearSelection();
                         }
                     }
                 }
+                // If left click is held and moved a sufficient distance, switch over to selection box
                 if (Input.GetMouseButton(0) && (boxStartPos - (Vector2)Input.mousePosition).magnitude > boxSelectBuffer)
                 {
                     UpdateSelectionBox(Input.mousePosition);
@@ -141,6 +148,7 @@ public class MouseManager : MonoBehaviour
                 break;
 
         }
+        // Do not show selected entity's ui if there are multiple entities selected
         if(selectedObjects.Count > 1)
         {
             foreach (GameObject gameObject in selectedObjects)
@@ -172,12 +180,15 @@ public class MouseManager : MonoBehaviour
         selectedObjects.Clear();
     }
 
+
     private void SelectObject(GameObject obj)
     {
         if (selectedObjects != null)
         {
+            // Add selected objects to the selected objects list
             selectedObjects.Add(obj);
             GameObject indicator = Instantiate(selectionIndicator, selectedObjects[0].transform.position, selectedObjects[0].transform.rotation);
+            // Attach the selection indicator to selected objects
             indicator.GetComponent<SelectionIndicator>().Attach(obj);
             if(selectedObjects.Count == 1)
             {
@@ -186,21 +197,25 @@ public class MouseManager : MonoBehaviour
 
                 if (selectedObjects[0].CompareTag("Building"))
                 {
+                    // If we've selected a single spawn building
                     if (selectedObjects[0].GetComponent<SpawnBuildingController>())
                     {
                         selectedObjects[0].GetComponent<SpawnBuildingController>().RallyPointVisible(true);
                         for (int i = 0; i < selectedObjects[0].GetComponent<SpawnBuildingController>().GetButtons().Length; i++)
                         {
                             int index = i;
+                            // Setup text and listeners for unit spawn buttons
                             selectedObjects[0].GetComponent<SpawnBuildingController>().GetButtons()[i].onClick.AddListener(() => BuildingButtonControl(index));
                             selectedObjects[0].GetComponent<SpawnBuildingController>().GetButtons()[i].GetComponentInChildren<Text>().text = selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitIDs()[index] + " Cost: " + selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitCost(selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitIDs()[index]);
                         }
                     }
+                    // If we've selected the HQ
                     if(selectedObjects[0].GetComponent<HQBuildingController>())
                     {
                         for (int i = 0; i < selectedObjects[0].GetComponent<HQBuildingController>().GetButtons().Length; i++)
                         {
                             int index = i;
+                            // Setup text and listeners for building construction buttons
                             selectedObjects[0].GetComponent<HQBuildingController>().GetButtons()[i].onClick.AddListener(() => PlaceBuilding(buildingIDs[index]));
                             selectedObjects[0].GetComponent<HQBuildingController>().GetButtons()[i].GetComponentInChildren<Text>().text = buildingIDs[index] + " Cost: " + buildingDict[buildingIDs[index]].GetComponent<BuildingController>().GetBuildCost();
                         }
@@ -296,13 +311,15 @@ public class MouseManager : MonoBehaviour
         }
     }
 
+    
     private void HandleBuildingControls()
     {
         if (selectedObjects != null && selectedObjects.Count == 1)
         {
+            // While a single spawn building is selected
             if (selectedObjects[0].GetComponent<SpawnBuildingController>())
             {
-
+                // Place rally point with right click
                 if (Input.GetMouseButtonDown(1))
                 {
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -318,11 +335,14 @@ public class MouseManager : MonoBehaviour
                     }
                 }
             }
+            // While a single Generator is selected
             if(selectedObjects[0].GetComponent<GeneratorBuildingController>())
             {
+                // Update it's ui
                 selectedObjects[0].GetComponent<GeneratorBuildingController>().UpdateUI();
             }
         } else 
+        // Turn off visible rally points while multiple buildings selected
         if(selectedObjects.Count > 1)
         {
             foreach(GameObject gameObject in selectedObjects)
@@ -408,6 +428,7 @@ public class MouseManager : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         RaycastHit hitInfo;
+        // If mouse is over valid ground, preview building placement
         if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask) && hitInfo.normal == Vector3.up)
         {
             canPlace = true;
@@ -419,12 +440,14 @@ public class MouseManager : MonoBehaviour
             canPlace = false;
             mouseWheelRotation = 0;
         }
+        // Visualise when not enough energy
         if(!gc.CanAfford(currentPlaceableObject.GetComponent<BuildingController>().GetBuildCost()))
         {
             canPlace = false;
         }
         currentPlaceableObject.GetComponent<BuildingController>().SetPlaceable(canPlace);
 
+        // Cancel placement on escape
         if (Input.GetKeyDown(KeyCode.Escape) && currentPlaceableObject != null)
         {
             Destroy(currentPlaceableObject);
