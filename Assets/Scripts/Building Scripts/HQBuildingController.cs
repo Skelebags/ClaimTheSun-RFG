@@ -14,5 +14,4 @@ public class HQBuildingController : BuildingController
 
         GetComponent<NavMeshObstacle>().enabled = true;
     }
-
 }

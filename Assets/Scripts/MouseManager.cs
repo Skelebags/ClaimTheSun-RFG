@@ -193,7 +193,7 @@ public class MouseManager : MonoBehaviour
                         {
                             int index = i;
                             selectedObjects[0].GetComponent<SpawnBuildingController>().GetButtons()[i].onClick.AddListener(() => BuildingButtonControl(index));
-                            selectedObjects[0].GetComponent<SpawnBuildingController>().GetButtons()[i].GetComponentInChildren<Text>().text = selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitIDs()[index];
+                            selectedObjects[0].GetComponent<SpawnBuildingController>().GetButtons()[i].GetComponentInChildren<Text>().text = selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitIDs()[index] + " Cost: " + selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitCost(selectedObjects[0].GetComponent<SpawnBuildingController>().GetUnitIDs()[index]);
                         }
                     }
                     if(selectedObjects[0].GetComponent<HQBuildingController>())
@@ -202,7 +202,7 @@ public class MouseManager : MonoBehaviour
                         {
                             int index = i;
                             selectedObjects[0].GetComponent<HQBuildingController>().GetButtons()[i].onClick.AddListener(() => PlaceBuilding(buildingIDs[index]));
-                            selectedObjects[0].GetComponent<HQBuildingController>().GetButtons()[i].GetComponentInChildren<Text>().text = buildingIDs[index];
+                            selectedObjects[0].GetComponent<HQBuildingController>().GetButtons()[i].GetComponentInChildren<Text>().text = buildingIDs[index] + " Cost: " + buildingDict[buildingIDs[index]].GetComponent<BuildingController>().GetBuildCost();
                         }
                     }
                 }
