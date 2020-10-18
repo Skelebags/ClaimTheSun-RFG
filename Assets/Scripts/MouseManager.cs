@@ -245,8 +245,8 @@ public class MouseManager : MonoBehaviour
                         {
                             if (unit.GetComponent<UnitController>().GetTeam() == team)
                             {
-                                Vector3 screenMin = Camera.main.WorldToScreenPoint(unit.GetComponent<Collider>().bounds.min);
-                                Vector3 screenMax = Camera.main.WorldToScreenPoint(unit.GetComponent<Collider>().bounds.max);
+                                Vector3 screenMin = Camera.main.WorldToScreenPoint(unit.GetComponentInChildren<Collider>().bounds.min);
+                                Vector3 screenMax = Camera.main.WorldToScreenPoint(unit.GetComponentInChildren<Collider>().bounds.max);
                                 if (screenMax.x > min.x && screenMin.x < max.x && screenMax.y > min.y && screenMin.y < max.y)
                                 {
                                     SelectObject(unit);
@@ -479,5 +479,10 @@ public class MouseManager : MonoBehaviour
         List<RaycastResult> raysastResults = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, raysastResults);
         return raysastResults;
+    }
+
+    public bool HasAnySelected()
+    {
+        return selectedObjects.Count > 0;
     }
 }

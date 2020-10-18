@@ -58,41 +58,45 @@ public class CameraController : MonoBehaviour
             transform.Translate(Vector3.up * cameraSpeed);
         }
 
-        // Pan Camera on hold middle click
-        if(Input.GetMouseButtonDown(2))
+        if(!mm.HasAnySelected())
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            RaycastHit hitInfo;
-            if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask))
+            // Pan Camera on hold middle click
+            if (Input.GetMouseButtonDown(2))
             {
-                startMousePos = Input.mousePosition;
-                startPanPos = hitInfo.point;
-            }
-            //startMousePos = Input.mousePosition;
-        }
-        if(Input.GetMouseButton(2))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            RaycastHit hitInfo;
-            if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask))
-            {
-                if((Input.mousePosition - startMousePos).magnitude >= minMoveBuffer)
+                RaycastHit hitInfo;
+                if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask))
                 {
-                    transform.Translate((hitInfo.point - startPanPos) * -panSpeed, Space.World);
-
-                    startPanPos = hitInfo.point;
                     startMousePos = Input.mousePosition;
+                    startPanPos = hitInfo.point;
                 }
+                //startMousePos = Input.mousePosition;
             }
-            //transform.Translate((Input.mousePosition - startMousePos) * -panSpeed);
-            //startMousePos = Input.mousePosition;
+            if (Input.GetMouseButton(2))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+                RaycastHit hitInfo;
+                if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask))
+                {
+                    if ((Input.mousePosition - startMousePos).magnitude >= minMoveBuffer)
+                    {
+                        transform.Translate((hitInfo.point - startPanPos) * -panSpeed, Space.World);
+
+                        startPanPos = hitInfo.point;
+                        startMousePos = Input.mousePosition;
+                    }
+                }
+                //transform.Translate((Input.mousePosition - startMousePos) * -panSpeed);
+                //startMousePos = Input.mousePosition;
+            }
+            if (Input.GetMouseButtonUp(2))
+            {
+                startMousePos = Vector3.zero;
+            }
         }
-        if(Input.GetMouseButtonUp(2))
-        {
-            startMousePos = Vector3.zero;
-        }
+        
         // Rotate camera on hold right click
         if (Input.GetMouseButtonDown(1))
         {

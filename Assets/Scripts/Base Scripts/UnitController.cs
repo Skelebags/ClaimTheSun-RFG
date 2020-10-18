@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -31,6 +32,10 @@ public class UnitController : BaseController
     [Tooltip("Can this unit attack while moving")]
     private bool attackMove = false;
 
+    [SerializeField]
+    [Tooltip("How far away will this unit aggro onto enemies")]
+    protected float aggroRange = 1f;
+
     protected NavMeshAgent agent;
 
     protected GameObject attackTarget;
@@ -51,6 +56,7 @@ public class UnitController : BaseController
         switch(state)
         {
             case State.idle:
+                LookForEnemy();
                 break;
 
             case State.attacking:
@@ -95,6 +101,21 @@ public class UnitController : BaseController
                 {
                     agent.ResetPath();
                 }
+            }
+        }
+    }
+
+    private void LookForEnemy()
+    {
+        RaycastHit hitInfo;
+
+        Vector3 origin = GetComponentInChildren<Collider>().bounds.center;
+
+        if(Physics.SphereCast(origin, aggroRange, Vector3.forward, out hitInfo, 0.1f, ~LayerMask.NameToLayer("Ground")))
+        {
+            if(hitInfo.transform.root.gameObject.GetComponent<BaseController>() && hitInfo.transform.root.gameObject.GetComponent<BaseController>().GetTeam() != team)
+            {
+                AttackOrder(hitInfo.transform.root.gameObject);
             }
         }
     }
