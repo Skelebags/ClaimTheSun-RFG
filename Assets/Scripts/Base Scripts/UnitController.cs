@@ -31,9 +31,9 @@ public class UnitController : BaseController
     [Tooltip("Can this unit attack while moving")]
     private bool attackMove = false;
 
-    private NavMeshAgent agent;
+    protected NavMeshAgent agent;
 
-    private GameObject attackTarget;
+    protected GameObject attackTarget;
 
     public enum State { idle, attacking}
     public State state;
@@ -99,7 +99,7 @@ public class UnitController : BaseController
         }
     }
 
-    public void MoveOrder(Vector3 targetPosition)
+    public virtual void MoveOrder(Vector3 targetPosition)
     {
         state = State.idle;
         //agent.SetDestination(targetPosition);
