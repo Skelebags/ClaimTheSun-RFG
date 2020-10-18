@@ -21,6 +21,10 @@ public class SpawnBuildingController : BuildingController
     private float spawnDist = 1f;
 
     [SerializeField]
+    [Tooltip("The distance above the building that it spawns units")]
+    private float spawnHeight = 0f;
+
+    [SerializeField]
     [Tooltip("This building's rallypoint")]
     private GameObject rallyPoint;
     
@@ -80,7 +84,7 @@ public class SpawnBuildingController : BuildingController
 
     private void SpawnUnit(GameObject unit)
     {
-        Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y - GetComponentInChildren<Collider>().bounds.extents.y + unit.GetComponentInChildren<Collider>().bounds.extents.y, transform.position.z);
+        Vector3 spawnPos = new Vector3(transform.position.x, (transform.position.y - GetComponentInChildren<Collider>().bounds.extents.y + unit.GetComponentInChildren<Collider>().bounds.extents.y) + spawnHeight, transform.position.z);
         spawnPos = spawnPos + transform.forward * spawnDist;
         GameObject newUnit = Instantiate(unit);
         newUnit.transform.position = spawnPos;
