@@ -23,6 +23,9 @@ public class BuildingController : BaseController
 
     private float buildTimer;
 
+    private MeshRenderer[] meshRenderers;
+    private Color[] baseColors;
+
     private Collider[] colliders;
 
     private bool canPlace;
@@ -34,7 +37,15 @@ public class BuildingController : BaseController
         base.Awake();
         state = State.placing;
 
-        
+        meshRenderers = GetComponentsInChildren<MeshRenderer>();
+        baseColors = new Color[meshRenderers.Length];
+        for (int i = 0; i < meshRenderers.Length; i++)
+        {
+            if (meshRenderers[i].material.HasProperty("_Color"))
+            {
+                baseColors[i] = meshRenderers[i].material.color;
+            }
+        }
 
         colliders = GetComponentsInChildren<Collider>();
         foreach (Collider collider in colliders)
@@ -49,10 +60,8 @@ public class BuildingController : BaseController
     }
 
     // Update is called once per frame
-    protected new virtual void Update()
+    protected virtual void Update()
     {
-        base.Update();
-
         switch(state)
         {
             case State.ready:

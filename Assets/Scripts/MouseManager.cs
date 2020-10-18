@@ -404,7 +404,7 @@ public class MouseManager : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         RaycastHit hitInfo;
-        if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask) && hitInfo.normal == Vector3.up)
+        if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, groundMask))
         {
             canPlace = true;
             currentPlaceableObject.transform.position = new Vector3(hitInfo.point.x, hitInfo.point.y + currentPlaceableObject.GetComponentInChildren<Collider>().bounds.extents.y, hitInfo.point.z);
