@@ -48,17 +48,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: VehicleUnit
-  buildTime: 1
-  buildCost: 5
+  buildTime: 10
+  buildCost: 10
   maxHealth: 10
-  armour: 0
-  decayResistance: 0
+  armour: 3
+  decayResistance: 0.5
   team: 0
   uiPrefab: {fileID: 8244252749326759881, guid: d955b03d270ce084f8b09c18c63a10d5, type: 3}
-  attackDamage: 5
-  armourPen: 0
-  attackRate: 0.5
-  attackRange: 2
+  attackDamage: 10
+  armourPen: 1
+  attackRate: 1
+  attackRange: 5
   idealRange: 0.948
   attackMove: 0
   state: 0
@@ -72,11 +72,11 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: -334000983
   m_Radius: 0.6
-  m_Speed: 3.5
+  m_Speed: 2
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 0.5
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1

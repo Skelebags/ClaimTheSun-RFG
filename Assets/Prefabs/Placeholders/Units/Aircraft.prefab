@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7937914785129770945}
-  - component: {fileID: 1579613154329895443}
   - component: {fileID: 6821958253943198684}
   - component: {fileID: 7305475689456430607}
+  - component: {fileID: 6383315832423936866}
   m_Layer: 0
   m_Name: Aircraft
   m_TagString: Unit
@@ -34,33 +34,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1579613154329895443
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3766759866487044450}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c802fbfd90a8be45bd9c810617728a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id: AirUnit
-  buildTime: 1
-  buildCost: 5
-  maxHealth: 10
-  armour: 0
-  decayResistance: 0
-  team: 0
-  uiPrefab: {fileID: 8244252749326759881, guid: d955b03d270ce084f8b09c18c63a10d5, type: 3}
-  attackDamage: 5
-  armourPen: 0
-  attackRate: 0.5
-  attackRange: 2
-  idealRange: 0.948
-  attackMove: 0
-  state: 0
 --- !u!195 &6821958253943198684
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -71,11 +44,11 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 2.38
-  m_Speed: 3.5
+  m_Speed: 5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 2
   m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -99,6 +72,33 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &6383315832423936866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3766759866487044450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a220f691588994b4faf12004bae720a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: AircraftUnit
+  buildTime: 15
+  buildCost: 20
+  maxHealth: 10
+  armour: 2
+  decayResistance: 0
+  team: 0
+  uiPrefab: {fileID: 8244252749326759881, guid: d955b03d270ce084f8b09c18c63a10d5, type: 3}
+  attackDamage: 10
+  armourPen: 3
+  attackRate: 0.5
+  attackRange: 4
+  idealRange: 0.95
+  attackMove: 0
+  state: 0
 --- !u!65 &5454563337321116390
 BoxCollider:
   m_ObjectHideFlags: 0
