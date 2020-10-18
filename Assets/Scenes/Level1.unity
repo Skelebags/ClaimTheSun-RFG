@@ -478,6 +478,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c6e486059e1f8c749970e5673799974e, type: 3}
+--- !u!1 &244384703 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1051500094488182638, guid: c6e486059e1f8c749970e5673799974e, type: 3}
+  m_PrefabInstance: {fileID: 244384702}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &341745050
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -987,7 +992,7 @@ Transform:
   m_LocalScale: {x: 15, y: 15, z: 15}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1196696380
 PrefabInstance:
@@ -1803,7 +1808,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2024342057
 PrefabInstance:
@@ -1812,6 +1817,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6166239829425225337, guid: b7ae7aadd8f3f984da0a392bfc121c39, type: 3}
+      propertyPath: playerHQ
+      value: 
+      objectReference: {fileID: 244384703}
     - target: {fileID: 6166239829425225341, guid: b7ae7aadd8f3f984da0a392bfc121c39, type: 3}
       propertyPath: m_Name
       value: GameManager
