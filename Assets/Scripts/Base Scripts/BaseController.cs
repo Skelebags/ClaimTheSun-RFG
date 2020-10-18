@@ -46,6 +46,11 @@ public class BaseController : MonoBehaviour
 
     private float decaytimer;
 
+    protected MeshRenderer[] meshRenderers;
+    protected Color[] baseColors;
+
+
+
     private GameObject canvas;
 
     protected virtual void Awake()
@@ -53,6 +58,38 @@ public class BaseController : MonoBehaviour
         currentHealth = maxHealth;
         canDecay = true;
         decaytimer = 0f;
+
+        meshRenderers = GetComponentsInChildren<MeshRenderer>();
+        baseColors = new Color[meshRenderers.Length];
+        for (int i = 0; i < meshRenderers.Length; i++)
+        {
+            if (meshRenderers[i].material.HasProperty("_Color"))
+            {
+                if(team == 0)
+                {
+                    baseColors[i] = new Color(0f, 0f, 0.5f);
+                }
+                else if(team == 1)
+                {
+                    baseColors[i] = new Color(1f, 0f, 0f);
+                }
+                else
+                {
+                    baseColors[i] = meshRenderers[i].material.color;
+                }
+            }
+        }
+    }
+
+    public virtual void Update()
+    {
+        for (int i = 0; i < meshRenderers.Length; i++)
+        {
+            if (meshRenderers[i].material.HasProperty("_Color"))
+            {
+                meshRenderers[i].material.color = baseColors[i];
+            }
+        }
     }
 
     public string GetID()

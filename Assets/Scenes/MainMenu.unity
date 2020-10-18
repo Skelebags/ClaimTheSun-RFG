@@ -1735,8 +1735,9 @@ MonoBehaviour:
     in direct sunlight.\nNon-Generator buildings and units will take damage over
     time from the harsh solar radiation found in the sunspots.\n\nLeft-Click: Select
     Building/Unit (Hold and drag for box select)\nRight-Click: Hold and drag to rotate
-    the camera (While building selected, click to set rally point)\nMiddle-Click:
-    Hold and drag to pan the camera\n\nWASD - Move camera\tQE - Lower/Raise Camera"
+    the camera (While building selected, click to set rally point) (While unit selected,
+    move to location/attack target)\nMiddle-Click: Hold and drag to pan the camera\n\nWASD
+    - Move camera\tQE - Lower/Raise Camera"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
