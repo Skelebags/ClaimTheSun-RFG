@@ -94,6 +94,7 @@ MonoBehaviour:
   - {fileID: 3766759866487044450, guid: ee0a51d8f089a3f43bb2a51a56a92419, type: 3}
   unitIDs: []
   spawnDist: 1
+  spawnHeight: 2
   rallyPoint: {fileID: 7829662122985073863}
 --- !u!65 &3048574024700206989
 BoxCollider:
@@ -134,7 +135,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4511364477618711244}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.05, z: 0}
+  m_LocalPosition: {x: 0, y: 0.05, z: 0.48}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2171755595419850403}

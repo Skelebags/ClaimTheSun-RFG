@@ -1785,9 +1785,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1758119925}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Level
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2399,7 +2399,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 543450652530563751}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Inverse_Boulder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2431,7 +2431,7 @@ GameObject:
   - component: {fileID: 3704730479344156324}
   - component: {fileID: 5265379582259873381}
   - component: {fileID: 7867701559909410663}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Rock1_LP:polySurface1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
