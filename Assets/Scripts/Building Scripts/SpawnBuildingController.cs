@@ -86,8 +86,7 @@ public class SpawnBuildingController : BuildingController
     {
         Vector3 spawnPos = new Vector3(transform.position.x, (transform.position.y - GetComponentInChildren<Collider>().bounds.extents.y + unit.GetComponentInChildren<Collider>().bounds.extents.y) + spawnHeight, transform.position.z);
         spawnPos = spawnPos + transform.forward * spawnDist;
-        GameObject newUnit = Instantiate(unit);
-        newUnit.transform.position = spawnPos;
+        GameObject newUnit = Instantiate(unit, spawnPos, Quaternion.identity);
         newUnit.GetComponent<UnitController>().SetTeam(team);
         newUnit.GetComponent<UnitController>().MoveOrder(rallyPoint.transform.position);
 

@@ -23,9 +23,9 @@ public class SelectionIndicator : MonoBehaviour
     {
         if(attachedObject != null)
         {
-            Bounds bigBounds =attachedObject.GetComponentInChildren<Renderer>().bounds;
+            Bounds bigBounds = attachedObject.GetComponentInChildren<Collider>().bounds;
 
-            transform.position = new Vector3(bigBounds.center.x, 0, bigBounds.center.z);
+            transform.position = new Vector3(bigBounds.center.x, bigBounds.center.y - bigBounds.extents.y, bigBounds.center.z);
             transform.localScale = new Vector3(bigBounds.size.x * sizeMultiplier, bigBounds.size.y * sizeMultiplier, bigBounds.size.z * sizeMultiplier);
 
             MeshRenderer[] meshRenderers = GetComponentsInChildren<MeshRenderer>();

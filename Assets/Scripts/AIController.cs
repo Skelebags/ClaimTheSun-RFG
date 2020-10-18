@@ -37,6 +37,7 @@ public class AIController : MouseManager
     private int currentVehicleUnit;
     private int currentAirUnit;
 
+    [SerializeField]
     private GameObject closestSunShaft;
 
     // Start is called before the first frame update
@@ -46,13 +47,18 @@ public class AIController : MouseManager
 
         state = State.build;
 
-        closestSunShaft = FindClosestSunShaft();
+        //closestSunShaft = FindClosestSunShaft();
         currentGenerators = 0;
+        currentInfantryUnit = 0;
+        currentVehicleUnit = 0;
+        currentAirUnit = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        closestSunShaft = FindClosestSunShaft();
         if (selectedObjects != null && selectedObjects.Count != 0)
         {
             foreach (GameObject gameObject in selectedObjects)
@@ -336,13 +342,14 @@ public class AIController : MouseManager
 
     private GameObject FindClosestSunShaft()
     {
+
         GameObject tempSunShaft = null;
 
         if (GameObject.FindGameObjectsWithTag("Sunlight") != null)
         {
             foreach (GameObject sunShaft in GameObject.FindGameObjectsWithTag("Sunlight"))
             {
-                if (tempSunShaft == null || (sunShaft.GetComponentInChildren<Collider>().ClosestPointOnBounds(hqBuilding.transform.position) - hqBuilding.transform.position).magnitude < (tempSunShaft.GetComponentInChildren<Collider>().ClosestPointOnBounds(hqBuilding.transform.position) - hqBuilding.transform.position).magnitude)
+                if (tempSunShaft == null || (sunShaft.GetComponent<Collider>().ClosestPointOnBounds(hqBuilding.transform.position) - hqBuilding.transform.position).magnitude < (tempSunShaft.GetComponent<Collider>().ClosestPointOnBounds(hqBuilding.transform.position) - hqBuilding.transform.position).magnitude)
                 {
                     tempSunShaft = sunShaft;
                 }
@@ -357,12 +364,12 @@ public class AIController : MouseManager
         Vector3 point =  new Vector3(
             Random.Range(collider.bounds.min.x, collider.bounds.max.x),
             0f,
-            Random.Range(collider.bounds.min.y, collider.bounds.max.y));
+            Random.Range(collider.bounds.min.z, collider.bounds.max.z));
 
-        //if(point != collider.ClosestPoint(point))
-        //{
-        //    point = GetRandomPointInBounds(collider);
-        //}
+        if(point != collider.ClosestPoint(point))
+        {
+            point = GetRandomPointInBounds(collider);
+        }
 
         return point;
     }

@@ -94,7 +94,7 @@ MonoBehaviour:
   - {fileID: 3766759866487044450, guid: ee0a51d8f089a3f43bb2a51a56a92419, type: 3}
   unitIDs: []
   spawnDist: 1
-  spawnHeight: 2
+  spawnHeight: 3
   rallyPoint: {fileID: 7829662122985073863}
 --- !u!65 &3048574024700206989
 BoxCollider:
