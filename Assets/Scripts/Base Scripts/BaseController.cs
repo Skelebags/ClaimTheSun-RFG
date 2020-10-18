@@ -89,7 +89,7 @@ public class BaseController : MonoBehaviour
         {
             for (int i = 0; i < meshRenderers.Length; i++)
             {
-                if (meshRenderers[i].material.HasProperty("_Color"))
+                if (meshRenderers[i] != null && meshRenderers[i].material.HasProperty("_Color"))
                 {
                     meshRenderers[i].material.color = baseColors[i];
                 }
