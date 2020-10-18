@@ -34,8 +34,6 @@ public class BuildingController : BaseController
         base.Awake();
         state = State.placing;
 
-        
-
         colliders = GetComponentsInChildren<Collider>();
         foreach (Collider collider in colliders)
         {

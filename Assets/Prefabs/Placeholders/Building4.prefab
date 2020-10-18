@@ -349,7 +349,8 @@ MonoBehaviour:
   constructionColor: {r: 0.16862746, g: 0.227451, b: 0.6313726, a: 0}
   unitPrefabs:
   - {fileID: 3058971833618883249, guid: 963072f10226bff408560264955cda30, type: 3}
-  unitIDs: []
+  unitIDs:
+  - 
   spawnDist: 1
   rallyPoint: {fileID: 5251453149921266853}
 --- !u!208 &8876794155235793479
